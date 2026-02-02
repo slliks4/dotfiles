@@ -1,115 +1,130 @@
 #!/bin/sh
+# --------------------------------------------------
+# X11 + dwm installation script
+# Source-based dwm (fork workflow)
+# --------------------------------------------------
 
 set -e
 
-# --------------------------
-# Paths / Config
-# --------------------------
+# --------------------------------------------------
+# Configuration
+# --------------------------------------------------
+
 DWM_SRC_DIR="/usr/local/src/dwm"
 DWM_REPO="https://github.com/slliks4/dwm.git"
 AUR_DIR="$HOME/aur"
 
-# --------------------------
+# --------------------------------------------------
 # Helpers
-# --------------------------
-check_dep() {
-  command -v "$1" >/dev/null 2>&1
-}
+# --------------------------------------------------
 
-echo_section() {
+section() {
   echo ""
   echo "==> $1"
 }
 
-install_pkgs=""
-aur_pkgs=""
+pkg_installed() {
+  pacman -Qi "$1" >/dev/null 2>&1
+}
 
-# --------------------------
-# Package Checks
-# --------------------------
+# --------------------------------------------------
+# Required pacman packages
+# --------------------------------------------------
+
+section "Checking system dependencies"
+
+PKGS=""
 
 # X11 base
-check_dep Xorg     || install_pkgs="$install_pkgs xorg-server"
-check_dep startx   || install_pkgs="$install_pkgs xorg-xinit"
+pkg_installed xorg-server || PKGS="$PKGS xorg-server"
+pkg_installed xorg-xinit  || PKGS="$PKGS xorg-xinit"
 
-# Build deps
-check_dep gcc      || install_pkgs="$install_pkgs base-devel"
-check_dep make     || install_pkgs="$install_pkgs base-devel"
-check_dep pkgconf  || install_pkgs="$install_pkgs base-devel"
+# Build tools
+pkg_installed base-devel || PKGS="$PKGS base-devel"
 
-check_dep alacritty || install_pkgs="$install_pkgs alacritty"
+# dwm build dependencies
+pkg_installed libx11      || PKGS="$PKGS libx11"
+pkg_installed libxinerama || PKGS="$PKGS libxinerama"
+pkg_installed libxft      || PKGS="$PKGS libxft"
+
+# Terminal
+pkg_installed alacritty || PKGS="$PKGS alacritty"
 
 # Fonts
-check_dep fc-list  || install_pkgs="$install_pkgs fontconfig"
-check_dep terminus-font || install_pkgs="$install_pkgs terminus-font"
-check_dep ttf-dejavu || install_pkgs="$install_pkgs ttf-dejavu"
+pkg_installed fontconfig    || PKGS="$PKGS fontconfig"
+pkg_installed terminus-font || PKGS="$PKGS terminus-font"
+pkg_installed ttf-dejavu    || PKGS="$PKGS ttf-dejavu"
 
-# AUR helper
-check_dep paru || aur_pkgs="$aur_pkgs paru"
-
-# --------------------------
-# Install Pacman Packages
-# --------------------------
-if [ -n "$install_pkgs" ]; then
-  echo_section "Installing system packages"
-  sudo pacman -S --needed $install_pkgs
+if [ -n "$PKGS" ]; then
+  section "Installing missing packages"
+  sudo pacman -S --needed $PKGS
+else
+  echo "✓ All required packages already installed"
 fi
 
-# --------------------------
-# Install paru (AUR helper)
-# --------------------------
-if ! check_dep paru; then
-  echo_section "Installing paru (AUR helper)"
+# --------------------------------------------------
+# Install paru (AUR helper) if missing
+# --------------------------------------------------
+
+if ! command -v paru >/dev/null 2>&1; then
+  section "Installing paru (AUR helper)"
+
   mkdir -p "$AUR_DIR"
   cd "$AUR_DIR"
 
-  if [ ! -d "$AUR_DIR/paru" ]; then
+  if [ ! -d paru ]; then
     git clone https://aur.archlinux.org/paru.git
   fi
 
   cd paru
   makepkg -si --noconfirm
+else
+  echo "✓ paru already installed"
 fi
 
-# --------------------------
-# Optional Retro Fonts (AUR)
-# --------------------------
-echo_section "Installing optional retro fonts (AUR)"
+# --------------------------------------------------
+# Optional retro fonts (AUR)
+# --------------------------------------------------
+
+section "Installing optional retro fonts (AUR)"
 paru -S --needed --noconfirm spleen-font tamsyn-font || true
 
-# --------------------------
-# Prepare dwm source dir
-# --------------------------
-echo_section "Preparing dwm source directory"
+# --------------------------------------------------
+# Prepare source directory
+# --------------------------------------------------
 
-if [ ! -d "/usr/local/src" ]; then
-  sudo mkdir -p /usr/local/src
-fi
+section "Preparing /usr/local/src"
 
-sudo chown -R "$USER:$USER" /usr/local/src
+sudo mkdir -p /usr/local/src
+sudo chown "$USER:$USER" /usr/local/src
 
-# --------------------------
+# --------------------------------------------------
 # Clone dwm fork
-# --------------------------
-echo_section "Installing dwm from fork"
+# --------------------------------------------------
+
+section "Installing dwm from fork"
 
 if [ ! -d "$DWM_SRC_DIR" ]; then
   cd /usr/local/src
   git clone "$DWM_REPO"
+else
+  echo "✓ dwm source already exists"
 fi
 
-# --------------------------
-# Build + install dwm
-# --------------------------
-echo_section "Building dwm"
+# --------------------------------------------------
+# Build and install dwm
+# --------------------------------------------------
+
+section "Building and installing dwm"
 
 cd "$DWM_SRC_DIR"
 sudo make clean install
 
-# --------------------------
-# Create .xinitrc
-# --------------------------
-echo_section "Creating ~/.xinitrc"
+# --------------------------------------------------
+# Ensure ~/.xinitrc exists
+# --------------------------------------------------
+
+section "Ensuring ~/.xinitrc"
 
 if [ ! -f "$HOME/.xinitrc" ]; then
   cat > "$HOME/.xinitrc" << 'EOF'
@@ -117,18 +132,20 @@ if [ ! -f "$HOME/.xinitrc" ]; then
 exec dwm
 EOF
   chmod +x "$HOME/.xinitrc"
+  echo "✓ Created ~/.xinitrc"
 else
-  echo "ℹ ~/.xinitrc already exists — not overwriting"
+  echo "✓ ~/.xinitrc already exists (not modified)"
 fi
 
-# --------------------------
+# --------------------------------------------------
 # Done
-# --------------------------
+# --------------------------------------------------
+
 echo ""
-echo "✅ X11 base + dwm installation complete"
+echo "✅ dwm installation complete"
 echo ""
-echo "Next step:"
-echo "  → Log into a TTY"
-echo "  → Run: startx"
+echo "Next steps:"
+echo "  1) Switch to a TTY"
+echo "  2) Run: startx"
 echo ""
-echo "If dwm starts successfully, X11 bring-up is complete."
+echo "If dwm launches, X11 bring-up is successful."
