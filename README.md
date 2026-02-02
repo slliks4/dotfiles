@@ -119,7 +119,7 @@ Planned:
 * visuals
 * autostart workflow
 
-* [dwm/README.md](dwm/README.md)
+* [https://github.com/slliks4/dwm/README.md](dwm/README.md)
 
 ---
 

@@ -2,36 +2,36 @@
 
 This document covers the **minimum X11 bring-up** required to reach a usable
 graphical session using **dwm**.
-Scope:
-- Xorg installation
-- dwm base build (no patches)
-- terminal access
-- `.xinitrc`
-- first successful `startx`
 
-Cosmetics, patches, bars, and advanced dwm customization are documented
-separately in `dwm/README.md`.
+**Scope:**
+
+* Xorg installation
+* dwm fork base build
+* terminal access
+* `.xinitrc`
+* first successful `startx`
+
+Advanced dwm customization (patches, bars, visuals, workflows) is documented in the dwm fork repository:
+👉 [https://github.com/slliks4/dwm](https://github.com/slliks4/dwm)
 
 ---
 
 ## 📚 Sources
 
-- Arch Wiki — Xorg  
-  https://wiki.archlinux.org/title/Xorg
-- Arch Wiki — Xinit  
-  https://wiki.archlinux.org/title/Xinit
-- Arch Wiki — dwm  
-  https://wiki.archlinux.org/title/Dwm
+* Arch Wiki — Xorg
+  [https://wiki.archlinux.org/title/Xorg](https://wiki.archlinux.org/title/Xorg)
+* Arch Wiki — Xinit
+  [https://wiki.archlinux.org/title/Xinit](https://wiki.archlinux.org/title/Xinit)
+* Arch Wiki — dwm
+  [https://wiki.archlinux.org/title/Dwm](https://wiki.archlinux.org/title/Dwm)
 
 ---
 
 ## 1️⃣ Install the Minimum X11 Stack
 
-From the Arch Wiki (Xorg → Installation):
-
 ```bash
 sudo pacman -S xorg-server xorg-xinit
-````
+```
 
 This provides:
 
@@ -45,8 +45,6 @@ This provides:
 ---
 
 ## 2️⃣ Install dwm Build Dependencies
-
-From the dwm documentation:
 
 ```bash
 sudo pacman -S base-devel libx11 libxinerama libxft
@@ -71,13 +69,11 @@ For now, install **alacritty**:
 sudo pacman -S alacritty
 ```
 
-Other tools (file managers, previews) are intentionally deferred.
+Other tools (file managers, previews, etc.) are intentionally deferred.
 
 ---
 
 ## 4️⃣ Install an AUR Helper (paru)
-
-Some fonts and later tools are sourced from the AUR.
 
 ```bash
 mkdir -p ~/aur
@@ -107,39 +103,51 @@ Fonts are required for readable dwm text rendering.
 
 ---
 
-## 6️⃣ Build and Install dwm (Base)
+## 6️⃣ dwm (install from your fork)
 
-Clone dwm into a system source directory:
+> Keep dwm source **outside** dotfiles.
+> Dotfiles/X11 docs describe *how to install*, while the dwm fork repo contains *the configuration*.
+
+**Paths used:**
+
+* Source code: `/usr/local/src/dwm`
+* Config + docs: dwm fork repository
 
 ```bash
+# Prepare source dir (once)
 sudo mkdir -p /usr/local/src
-sudo git clone https://git.suckless.org/dwm /usr/local/src/dwm
-sudo chown -R $USER:$USER /usr/local/src/dwm
+sudo chown -R "$USER:$USER" /usr/local/src
+
+# Clone your fork (not upstream)
+cd /usr/local/src
+git clone https://github.com/slliks4/dwm.git
+cd dwm
+
+# Build + install
+sudo make clean install
 ```
 
-Build and install:
+Fork repo:
+👉 [https://github.com/slliks4/dwm](https://github.com/slliks4/dwm)
+
+---
+
+## 7️⃣ dwm Configuration Location
+
+dwm is configured by editing and rebuilding:
+
+* `/usr/local/src/dwm/config.h`
+
+Apply changes with:
 
 ```bash
 cd /usr/local/src/dwm
 sudo make clean install
 ```
 
-⚠️ No patches are applied at this stage.
-
-(Optional: prepare for patch tracking later)
-
-```bash
-git init
-git remote add origin https://git.suckless.org/dwm
-```
-
 ---
 
-## 7️⃣ Create `.xinitrc`
-
-From Arch Wiki → Xinit.
-
-Create the file:
+## 8️⃣ Create `.xinitrc`
 
 ```bash
 nvim ~/.xinitrc
@@ -152,112 +160,18 @@ Minimal content:
 exec dwm
 ```
 
+(Optional safer version)
+
+```sh
+#!/bin/sh
+exec dbus-run-session dwm
+```
+
 Make it executable:
 
 ```bash
 chmod +x ~/.xinitrc
 ```
-
----
-
-## 8️⃣ Basic dwm Key Configuration (Optional but Practical)
-
-dwm is configured by editing `config.h` and recompiling.
-
-Open the config file:
-
-```bash
-cd /usr/local/src/dwm
-sudo nvim config.h
-```
-
----
-
-### 🔑 Set the Modifier Key (Super / Windows Key)
-
-Find the line defining `MODKEY`:
-
-```c
-#define MODKEY Mod1Mask
-```
-
-Change it to use the **Super (Windows) key**:
-
-```c
-#define MODKEY Mod4Mask
-```
-
----
-
-### 🖥 Set the Default Terminal (Alacritty)
-
-Search for the terminal definition:
-
-```c
-static const char *termcmd[] = { "st", NULL };
-```
-
-Update it to use **alacritty**:
-
-```c
-static const char *termcmd[] = { "alacritty", NULL };
-```
-
----
-
-### ⌨️ Set Terminal Keybinding (Mod + Enter)
-
-Locate the keybindings section:
-
-```c
-static const Key keys[] = {
-```
-
-Find the terminal binding (default example):
-
-```c
-{ MODKEY|ShiftMask, XK_Return, spawn, {.v = termcmd } },
-```
-
-Change it to **Mod + Enter**:
-
-```c
-{ MODKEY, XK_Return, spawn, {.v = termcmd } },
-```
-
----
-
-### Set Focus Keybinding (Mod + Shift + Enter)
-
-Locate the keybindings section:
-
-```c
-static const Key keys[] = {
-```
-
-Find the zoom binding (default example):
-
-```c
-{ MODKEY,       XK_Return, zoom,           {0} }
-```
-
-Change it to **Mod + Shift + Enter**:
-
-```c
-{ MODKEY|ShiftMask,             XK_Return, zoom,           {0}
-```
-
----
-
-### 🔄 Rebuild dwm
-
-After making changes, recompile and install:
-
-```bash
-sudo make clean install
-```
-
-Restart X (or log out and run `startx` again) to apply changes.
 
 ---
 
@@ -278,7 +192,7 @@ X11 is considered **successfully set up** when:
 * `startx` launches dwm
 * a status bar appears
 * `Mod + Enter` opens a terminal
-* windows can be tiled and closed
+* windows tile and close correctly
 * X exits cleanly
 
 If this works, X11 bring-up is complete.
@@ -287,7 +201,7 @@ If this works, X11 bring-up is complete.
 
 ## 🚫 Out of Scope (Handled Later)
 
-The following are intentionally **not configured yet**:
+Intentionally not configured yet:
 
 * dwm patches and cosmetics
 * compositor
@@ -297,12 +211,11 @@ The following are intentionally **not configured yet**:
 * clipboard tools
 * NVIDIA tuning
 
-These are layered on **after X11 stability** is confirmed.
+These are layered **after X11 stability** is confirmed.
 
 ---
 
 ## 🔜 Next Step
 
 Proceed to:
-
-* `dwm/README.md` → patches, cosmetics, workflow
+👉 `https://github.com/slliks4/dwm/README.md` — patches, cosmetics, workflow
