@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Discord
+GenericName=Internet Messenger
+Comment=All-in-one voice and text chat
+StartupWMClass=discord
+Exec=discord
+Icon=/usr/bin/env sh -c "$HOME/opt/discord/discord.png"
+Terminal=false
+Type=Application
+Categories=Network;InstantMessaging;
