@@ -10,6 +10,8 @@ CONFIG_DIR="$HOME/.config/system/notifications"
 SCRIPT_NAME="dunst.sh"
 TARGET_SCRIPT="$CONFIG_DIR/$SCRIPT_NAME"
 XINITRC="$HOME/.xinitrc"
+DUNST_CONFIG_DIR="$HOME/.config/dunst"
+DUNST_RC_TARGET="$DUNST_CONFIG_DIR/dunstrc"
 
 # ==========================
 # Dependencies
@@ -28,15 +30,19 @@ ensure_pkg libnotify
 # Setup directories
 # ==========================
 mkdir -p "$CONFIG_DIR"
+mkdir -p "$DUNST_CONFIG_DIR"
+
 
 # ==========================
 # Symlink script
 # ==========================
 # Ensure source script is executable
 chmod +x "$DOTFILES_DIR/$SCRIPT_NAME"
+chmod +x "$DOTFILES_DIR/dunstrc"
 
 # Create / update symlink
 ln -sf "$DOTFILES_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
+ln -sf "$DOTFILES_DIR/dunstrc" "$DUNST_RC_TARGET"
 
 # ==========================
 # Ensure .xinitrc exists

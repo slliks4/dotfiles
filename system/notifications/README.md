@@ -55,9 +55,11 @@ Installed via symlink to:
 
 ```text
 ~/.config/system/notifications/dunst.sh
+~/.config/dunst/dunstrc
 ```
 
 The script is started from `~/.xinitrc` before `dwm` launches.
+*NOTE: dunstrc is the configuration for the notification
 
 ---
 

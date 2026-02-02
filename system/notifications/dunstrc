@@ -1,0 +1,14 @@
+[global]
+width = 300
+height = (0, 200)
+
+# Image handling
+scale = 1
+max_icon_size = 64
+
+# Visual spacing
+padding = 8
+horizontal_padding = 8
+
+# Safety
+notification_limit = 5
