@@ -28,57 +28,64 @@ mkdir -p "$DIR"
 # Helpers
 # --------------------------
 get_ip() {
-  ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if ($i=="src") print $(i+1)}'
+	ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if ($i=="src") print $(i+1)}'
 }
 
 stop_http_server() {
-  pkill -f "python3 -m http.server $PORT" 2>/dev/null || true
+	pkill -f "python3 -m http.server $PORT" 2>/dev/null || true
 }
 
 serve_http() {
-  stop_http_server
+	notify="${1:-silent}"   # default = silent
 
-  IP="$(get_ip)"
-  URL="http://$IP:$PORT/$(basename "$HTTP_FILE")"
+	stop_http_server
 
-  cd "$DIR"
-  python3 -m http.server "$PORT" >/dev/null 2>&1 &
-  disown
+	IP="$(get_ip)"
+	URL="http://$IP:$PORT/$(basename "$HTTP_FILE")"
 
-  notify-send -t 6000 "Screenshot shared" "$URL"
+	cd "$DIR" || exit 1
+	python3 -m http.server "$PORT" >/dev/null 2>&1 &
+	disown
+
+	# Copy image URL to clipboard (X11)
+	echo "$URL" | xclip -selection clipboard
+
+	if [ "$notify" = "notify" ]; then
+		notify-send -t 6000 "Screenshot shared" "$URL"
+	fi
 }
 
 # --------------------------
 # Main
 # --------------------------
 case "$1" in
-  save)
-    maim -s "$FILE" || exit 1
-    xclip -selection clipboard -t image/png < "$FILE"
-    notify-send "Screenshot saved & copied" "$FILE"
-    ;;
+	save)
+		maim -s "$FILE" || exit 1
+		xclip -selection clipboard -t image/png < "$FILE"
+		notify-send "Screenshot saved & copied" "$FILE"
+		;;
 
-  full)
-    maim "$FILE"
-    notify-send "Full screenshot saved" "$FILE"
-    ;;
+	full)
+		maim "$FILE"
+		notify-send "Full screenshot saved" "$FILE"
+		;;
 
-  http)
-    maim -s "$HTTP_FILE" || exit 1
-    xclip -selection clipboard -t image/png < "$HTTP_FILE"
-    serve_http
-    ;;
+	http)
+		maim -s "$HTTP_FILE" || exit 1
+		xclip -selection clipboard -t image/png < "$HTTP_FILE"
+		serve_http notify
+		;;
 
-  http-save)
-    maim -s "$FILE" || exit 1
-    cp "$FILE" "$HTTP_FILE"
-    xclip -selection clipboard -t image/png < "$FILE"
-    serve_http
-    notify-send "Screenshot saved & shared" "$FILE"
-    ;;
+	http-save)
+		maim -s "$FILE" || exit 1
+		cp "$FILE" "$HTTP_FILE"
+		xclip -selection clipboard -t image/png < "$FILE"
+		serve_http
+		notify-send "Screenshot saved & shared" "$FILE"
+		;;
 
-  *)
-    maim -s | xclip -selection clipboard -t image/png
-    notify-send -t 1500 "Screenshot copied"
-    ;;
+	*)
+		maim -s | xclip -selection clipboard -t image/png
+		notify-send -t 1500 "Screenshot copied"
+		;;
 esac
