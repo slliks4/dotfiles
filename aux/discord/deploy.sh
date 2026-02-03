@@ -27,6 +27,7 @@ INSTALL_DIR="$INSTALL_ROOT/discord"
 
 LOCAL_BIN="$HOME/.local/bin"
 BIN_LINK="$LOCAL_BIN/discord"
+DEPLOY_BIN_LINK="$LOCAL_BIN/deploy-discord"
 
 DESKTOP_DIR="$HOME/.local/share/applications"
 DESKTOP_LINK="$DESKTOP_DIR/discord.desktop"
@@ -68,6 +69,11 @@ mv "$INSTALL_ROOT/Discord" "$INSTALL_DIR"
 echo "-> Linking binary: $BIN_LINK"
 mkdir -p "$LOCAL_BIN"
 ln -sf "$INSTALL_DIR/Discord" "$BIN_LINK"
+
+# --- symlink deploy into ~/.local/bin/deploy-discord ---
+echo "-> Linking binary: $DEPLOY_BIN_LINK"
+mkdir -p "$LOCAL_BIN"
+ln -sf "$APP_DIR/deploy.sh" "$DEPLOY_BIN_LINK"
 
 # --- symlink desktop entry ---
 echo "-> Linking desktop entry: $DESKTOP_LINK"
