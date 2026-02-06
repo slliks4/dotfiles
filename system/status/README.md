@@ -38,6 +38,10 @@ Right-aligned status information:
 
 * **Date & time**
 
+* **Volume**
+
+* **Brightness**
+
 The values are designed to be:
 
 * readable at a glance
