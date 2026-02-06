@@ -83,9 +83,9 @@ case "$1" in
 		serve_http
 		notify-send "Screenshot saved & shared" "$FILE"
 		;;
-
 	*)
-		maim -s | xclip -selection clipboard -t image/png
-		notify-send -t 1500 "Screenshot copied"
+		if ( set -o pipefail; maim -s | xclip -selection clipboard -t image/png ); then
+			notify-send -t 1500 "Screenshot copied"
+		fi
 		;;
 esac
