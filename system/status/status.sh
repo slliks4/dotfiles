@@ -55,25 +55,10 @@ while true; do
     DATE=$(date "+%a %d %b")
     TIME=$(date "+%H:%M")
 
-    VOL=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{print int($2 * 100)}')
-    [ -n "$VOL" ] && VOL="VOL ${VOL}%" || VOL="VOL --"
-
-    if [ -d /sys/class/backlight ]; then
-	    BL=$(ls /sys/class/backlight | head -n1)
-	    CUR=$(cat /sys/class/backlight/$BL/brightness)
-	    MAX=$(cat /sys/class/backlight/$BL/max_brightness)
-	    BRIGHT=$(awk "BEGIN {printf \"%.0f%%\", ($CUR/$MAX)*100}")
-	    BRIGHT="BRI $BRIGHT"
-    else
-	    BRIGHT="BRI --"
-    fi
-
-
-
     # --------------------------
     # Update dwm status bar
     # --------------------------
-    xsetroot -name "CPU $CPU | MEM $MEM | $BATTERY | $NET | $VOL | $BRIGHT | $DATE $TIME"
+    xsetroot -name " @slliks4.com (CPU $CPU | MEM $MEM | $BATTERY | $NET) $DATE $TIME "
 
     sleep "$INTERVAL"
 done
