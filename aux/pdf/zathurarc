@@ -1,0 +1,19 @@
+set adjust-open "best-fit"
+set selection-clipboard clipboard
+
+# Vim-style navigation
+map j scroll down
+map k scroll up
+map h scroll left
+map l scroll right
+
+map gg goto top
+map G goto bottom
+
+# Search
+map / search forward
+map ? search backward
+
+# Zoom
+map + zoom in
+map - zoom out
