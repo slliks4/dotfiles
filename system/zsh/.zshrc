@@ -49,3 +49,6 @@ eval "$(pyenv init -)"
 
 # PDF viewer
 alias pdf="zathura"
+
+# Python shell safety
+source "/home/scaramouche/.dotfiles/dev/python/shell-guards.zsh"

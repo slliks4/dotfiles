@@ -3,12 +3,12 @@
 # Show usage if no args
 if [ $# -lt 1 ]; then
     cat <<EOF
-    Usage:
-    dj start <ProjectName>     # new Django project in pipenv
-    dj run [port]             # runserver 0.0.0.0:<port> (default 8000)
-    dj <manage.py command>    # any other manage.py command (startapp, migrate…)
+Usage:
+  dj start <ProjectName>     # new Django project in pipenv
+  dj run [port]             # runserver 0.0.0.0:<port> (default 8000)
+  dj <manage.py command>    # any other manage.py command (startapp, migrate…)
 EOF
-exit 1
+    exit 1
 fi
 
 CMD="$1"; shift
@@ -17,61 +17,55 @@ case "$CMD" in
 
   # ─── Start a new Django project in pipenv ─────────────────────────────
   start)
-  if [ -z "$1" ]; then
-      echo "Error: supply a project name: dj start <ProjectName>"
-      exit 2
-  fi
-  PROJECT="$1"
+    if [ -z "$1" ]; then
+        echo "Error: supply a project name: dj start <ProjectName>"
+        exit 2
+    fi
+    PROJECT="$1"
 
-    # 1) Create project folder & cd into it
-    mkdir "$PROJECT" 
-    cd "$PROJECT" 
+    mkdir "$PROJECT"
+    cd "$PROJECT"
 
-    # 2) Create env file in project dir
     export PIPENV_VENV_IN_PROJECT=1
-    
-    # 3) Install Django in that env
-    pipenv install django
 
-    # 4) Bootstrap the project inside pipenv
+    pipenv install django
     pipenv run django-admin startproject config .
 
-    # 5) Add .gitignore
     cat > .gitignore <<EOF
-# Virtual env & config
-venv/
+# Virtual env
+.venv/
 Pipfile.lock
 .env
 
-# Python cache
+# Python
 __pycache__/
 *.pyc
 
-# SQLite DB
+# SQLite
 db.sqlite3
 
-# OS/editor
+# OS / editor
 .DS_Store
 *.swp
 EOF
 
-    # 6) Initialize Git
     git init
 
-    echo "✓ Project '$PROJECT' created with pipenv, Django installed, and Git initialized."
-    echo "To get started, run: cd $PROJECT & pipenv shell & dj run"
+    echo "✓ Project '$PROJECT' created"
+    echo "Next steps:"
+    echo "  cd $PROJECT"
+    echo "  dj run"
     ;;
 
-  # ─── Run the development server inside pipenv ───────────────────────────
+  # ─── Run the development server ──────────────────────────────────────
   run|runserver)
-  PORT="${1:-8000}"
-  echo "Starting Django dev server on 0.0.0.0:$PORT (in pipenv)…"
-  python manage.py runserver "0.0.0.0:$PORT"
-  ;;
+    PORT="${1:-8000}"
+    echo "Starting Django dev server on 0.0.0.0:$PORT"
+    pipenv run python manage.py runserver "0.0.0.0:$PORT"
+    ;;
 
-  # ─── All other manage.py commands via pipenv ────────────────────────────
+  # ─── All other manage.py commands ─────────────────────────────────────
   *)
-  # E.g. dj startapp blog → pipenv run python manage.py startapp blog
-  python manage.py "$CMD" "$@"
-  ;;
+    pipenv run python manage.py "$CMD" "$@"
+    ;;
 esac
