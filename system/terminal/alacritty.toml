@@ -1,0 +1,62 @@
+# -------------------------
+# Window
+# -------------------------
+[window]
+opacity = 0.85
+decorations = "None"
+
+[window.padding]
+x = 8
+y = 6
+
+# -------------------------
+# Font
+# -------------------------
+[font]
+size = 13.0
+
+[font.normal]
+family = "Terminus"
+style = "Regular"
+
+[font.bold]
+family = "Terminus"
+style = "Bold"
+
+[font.italic]
+family = "Terminus"
+style = "Italic"
+
+# -------------------------
+# Cursor
+# -------------------------
+[cursor.style]
+shape = "Block"
+blinking = "on"
+
+# -------------------------
+# Colors (classic X11 vibe)
+# -------------------------
+[colors.primary]
+background = "#000000"
+foreground = "#d0d0d0"
+
+[colors.normal]
+black   = "#000000"
+red     = "#cd5c5c"
+green   = "#5f875f"
+yellow  = "#cdcd00"
+blue    = "#5f87ff"
+magenta = "#875faf"
+cyan    = "#5fafaf"
+white   = "#e0e0e0"
+
+[colors.bright]
+black   = "#5f5f5f"
+red     = "#ff5f5f"
+green   = "#87ff87"
+yellow  = "#ffff87"
+blue    = "#87afff"
+magenta = "#af87ff"
+cyan    = "#87ffff"
+white   = "#ffffff"
