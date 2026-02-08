@@ -1,15 +1,21 @@
-#!/bin/sh
-
+#!/usr/bin/env sh
 set -e
 
 # ==========================
 # Paths
 # ==========================
-DOTFILES_DIR="$HOME/.dotfiles/system/notifications"
+
+# Absolute path to this script's directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Module paths
+DOTFILES_DIR="$SCRIPT_DIR"
 CONFIG_DIR="$HOME/.config/system/notifications"
 SCRIPT_NAME="dunst.sh"
+
 TARGET_SCRIPT="$CONFIG_DIR/$SCRIPT_NAME"
 XINITRC="$HOME/.xinitrc"
+
 DUNST_CONFIG_DIR="$HOME/.config/dunst"
 DUNST_RC_TARGET="$DUNST_CONFIG_DIR/dunstrc"
 

@@ -1,12 +1,15 @@
-#!/bin/sh
-
+#!/usr/bin/env sh
 set -e
 
 # ==========================
 # Paths & filenames
 # ==========================
 
-DOTFILES_DIR="$HOME/.dotfiles/system/keyboard"
+# Absolute path to this script's directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Module paths
+DOTFILES_DIR="$SCRIPT_DIR"
 CONFIG_DIR="$HOME/.config/system/keyboard"
 SCRIPT_NAME="keyboard.sh"
 

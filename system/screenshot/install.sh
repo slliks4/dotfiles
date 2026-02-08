@@ -1,11 +1,15 @@
-#!/bin/sh
-
+#!/usr/bin/env sh
 set -e
 
 # --------------------------
 # Paths
 # --------------------------
-DOTFILES_DIR="$HOME/.dotfiles/system/screenshot"
+
+# Absolute path to this script's directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Module paths
+DOTFILES_DIR="$SCRIPT_DIR"
 BIN_DIR="$HOME/.local/bin"
 SCRIPT_NAME="screenshot"
 

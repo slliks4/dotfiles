@@ -1,9 +1,11 @@
-#!/bin/sh
-
+#!/usr/bin/env bash
 set -e
 
+# Resolve script directory (absolute path)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Paths
-DOTFILES_DIR="$HOME/.dotfiles/system/display"
+DOTFILES_DIR="$SCRIPT_DIR"
 CONFIG_DIR="$HOME/.config/system/display"
 SCRIPT_NAME="monitor-setup.sh"
 
