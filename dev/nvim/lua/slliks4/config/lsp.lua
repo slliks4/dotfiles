@@ -61,8 +61,8 @@ vim.lsp.config("pylsp", {
         pylsp = {
             plugins = {
                 pylsp_mypy = { enabled = true },
-                pyflakes = { enabled = false },
-                pycodestyle = { enabled = false },
+                pyflakes = { enabled = true },
+                pycodestyle = { enabled = true },
             },
         },
     },
