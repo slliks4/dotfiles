@@ -23,6 +23,7 @@ Things Contained in this README:
 - clipboard
 - notifications
 - power utilities
+- etc
 
 Each subsection can be set up independently.
 
@@ -252,6 +253,46 @@ Designed to be:
 📄 Detailed setup and usage:
 
 * [screenshot/README.md](screenshot/README.md)
+
+---
+
+## Compositor
+
+📄 Detailed setup and usage:
+
+* [compositor/README.md](screenshot/README.md)
+
+---
+
+## Terminal
+
+📄 Detailed setup and usage:
+
+* [terminal/README.md](screenshot/README.md)
+
+---
+
+## Shell (zsh) 
+
+📄 Detailed setup and usage:
+
+* [zsh/README.md](screenshot/README.md)
+
+---
+
+## Status bar
+
+📄 Detailed setup and usage:
+
+* [status/README.md](screenshot/README.md)
+
+---
+
+## input (mouse)
+
+📄 Detailed setup and usage:
+
+* [input/README.md](screenshot/README.md)
 
 ---
 
