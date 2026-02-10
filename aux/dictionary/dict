@@ -1,0 +1,72 @@
+#!/usr/bin/env sh
+#
+# Dictionary lookup utility (X11)
+#
+# Usage:
+#   dict WORD        → lookup WORD
+#   dict             → lookup primary selection (fallback to clipboard)
+#
+
+set -e
+
+# --------------------------
+# Config
+# --------------------------
+API="https://api.dictionaryapi.dev/api/v2/entries/en"
+NOTIFY_TIME=10000
+ERROR_COLOR="#bf616a"
+
+# --------------------------
+# Input (arg → primary → clipboard)
+# --------------------------
+if [ "$#" -ge 1 ] && [ -n "$1" ]; then
+  word="$1"
+else
+  word="$(xclip -o -selection primary 2>/dev/null || printf "")"
+  [ -z "$word" ] && word="$(xclip -o -selection clipboard 2>/dev/null || printf "")"
+fi
+
+# Trim whitespace
+word="$(printf "%s" "$word" | tr -d '\n' | sed 's/^ *//;s/ *$//')"
+
+# Nothing selected → notify & exit
+[ -z "$word" ] && {
+  notify-send -t 1500 "Dictionary" "Select text first"
+  exit 0
+}
+
+# --------------------------
+# URL encode (handles spaces, symbols)
+# --------------------------
+word_encoded="$(printf "%s" "$word" | jq -sRr @uri)"
+
+# --------------------------
+# Fetch
+# --------------------------
+response="$(curl -fsSL "$API/$word_encoded" || true)"
+
+# Invalid word / API error
+printf "%s" "$response" | jq -e 'type == "array"' >/dev/null 2>&1 || {
+  notify-send -h string:bgcolor:"$ERROR_COLOR" -t 3000 \
+    "Dictionary" "No definition found for: $word"
+  exit 0
+}
+
+# --------------------------
+# Parse (first definition per POS)
+# --------------------------
+defs="$(
+  printf "%s" "$response" |
+    jq -r '
+      .[0].meanings[]
+      | "\(.partOfSpeech): \(.definitions[0].definition)"
+    ' || true
+)"
+
+[ -z "$defs" ] && exit 0
+
+# --------------------------
+# Notify + Clipboard
+# --------------------------
+notify-send -t "$NOTIFY_TIME" "$word" "$defs"
+printf "%s\n" "$defs" | xclip -selection clipboard

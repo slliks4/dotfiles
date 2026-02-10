@@ -1,0 +1,50 @@
+#!/usr/bin/env sh
+#
+# Wiki quick-open (X11)
+#
+# Usage:
+#   wikiiq WORD        → open Wikipedia page
+#   wikiiq             → open page for primary selection / clipboard
+#
+
+set -e
+
+# --------------------------
+# Config
+# --------------------------
+BASE_URL="https://en.wikipedia.org/wiki"
+NOTIFY_TIME=2000
+
+# --------------------------
+# Input (arg → primary → clipboard)
+# --------------------------
+if [ "$#" -ge 1 ] && [ -n "$1" ]; then
+  query="$1"
+else
+  query="$(xclip -o -selection primary 2>/dev/null || printf "")"
+  [ -z "$query" ] && query="$(xclip -o -selection clipboard 2>/dev/null || printf "")"
+fi
+
+# Trim whitespace
+query="$(printf "%s" "$query" | tr -d '\n' | sed 's/^ *//;s/ *$//')"
+
+# Nothing selected
+[ -z "$query" ] && {
+  notify-send -t 1500 "Wiki" "Select text first"
+  exit 0
+}
+
+# --------------------------
+# URL encode
+# --------------------------
+query_encoded="$(printf "%s" "$query" | jq -sRr @uri)"
+
+# --------------------------
+# Open browser
+# --------------------------
+qutebrowser "$BASE_URL/$query_encoded" >/dev/null 2>&1 &
+
+# --------------------------
+# Notify
+# --------------------------
+notify-send -t "$NOTIFY_TIME" "Wikipedia" "Opened: $query"

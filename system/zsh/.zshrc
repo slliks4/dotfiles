@@ -52,3 +52,6 @@ alias pdf="zathura"
 
 # Python shell safety
 source "/home/scaramouche/.dotfiles/dev/python/shell-guards.zsh"
+
+# wiki-tui
+alias wiki="wiki-tui"
