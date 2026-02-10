@@ -1,0 +1,28 @@
+#!/bin/sh
+
+MODE="$1"
+
+case "$MODE" in
+    power-saver|powersave)
+        powerprofilesctl set power-saver
+        light -U 30 >/dev/null 2>&1
+        notify-send "Power saver mode"
+        ;;
+
+    balanced)
+        powerprofilesctl set balanced
+        light -A 100 >/dev/null 2>&1
+        notify-send "Balanced mode"
+        ;;
+
+    performance)
+        powerprofilesctl set performance
+        light -A 100 >/dev/null 2>&1
+        notify-send "Performance mode"
+        ;;
+
+    *)
+        echo "Usage: battery-mode {power-saver | balanced | performance}"
+        exit 1
+        ;;
+esac
