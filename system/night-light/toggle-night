@@ -1,0 +1,16 @@
+#!/bin/sh
+
+NIGHT_TEMP=2000
+DAY_TEMP=6500
+
+if [ -f /tmp/redshift-night ]; then
+  redshift -x >/dev/null 2>&1        # reset gamma/temperature
+  redshift -O "$DAY_TEMP" >/dev/null 2>&1
+  rm -f /tmp/redshift-night
+  notify-send "Night Light OFF"
+else
+  redshift -x >/dev/null 2>&1
+  redshift -O "$NIGHT_TEMP" >/dev/null 2>&1
+  : > /tmp/redshift-night
+  notify-send "Night Light ON"
+fi
