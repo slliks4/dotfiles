@@ -13,6 +13,8 @@ TARGET_SCRIPT="$CONFIG_DIR/$SCRIPT_NAME"
 TARGET_WALLPAPER="$CONFIG_DIR/wallpaper"
 
 XINITRC="$HOME/.xinitrc"
+BINPATH="$HOME/.local/bin"
+RESYNC="$BINPATH/resync-session"
 
 # --------------------------
 # Create config directory
@@ -57,3 +59,41 @@ else
     echo "\"$TARGET_SCRIPT\""
   } >> "$XINITRC"
 fi
+
+# ==========================
+# Ensure ~/.local/bin exists
+# ==========================
+mkdir -p "$BINPATH"
+
+# ==========================
+# Ensure resync-session exists (base template)
+# ==========================
+if [ ! -f "$RESYNC" ]; then
+  cat <<EOF > "$RESYNC"
+#!/usr/bin/env sh
+set -e
+
+# Session modules will be injected below
+
+EOF
+  chmod +x "$RESYNC"
+fi
+
+# ==========================
+# Remove old monitor-setup block (idempotent)
+# ==========================
+sed -i '/# monitor setup start/,/# monitor setup end/d' "$RESYNC"
+
+# ==========================
+# Append monitor-setup block
+# ==========================
+cat <<EOF >> "$RESYNC"
+
+# monitor setup start
+"$TARGET_SCRIPT"
+# monitor setup end
+EOF
+
+echo "monitor-setup hook added to resync-session."
+
+echo "monitor-setup configuration installed."

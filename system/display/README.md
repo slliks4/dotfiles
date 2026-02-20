@@ -3,28 +3,64 @@
 This module manages **monitor layout, refresh rate, and wallpaper setup** for X11 sessions.
 
 The goal is to keep all display logic:
-- explicit
-- deterministic
-- portable across locations (home, school, laptop-only)
-- independent of the window manager
+
+* explicit
+* deterministic
+* portable across locations (home, school, laptop-only, events)
+* independent of the window manager
 
 All configuration is applied at **X session startup**, before the WM launches.
+
+It is also included in the session resync script, so layouts can be re-applied manually when monitors change.
 
 ---
 
 ## What This Module Handles
 
-- Multi-monitor layouts
-- Portrait and landscape rotation
-- Mixed refresh rates
-- Primary display selection
-- Laptop-only fallback behavior
-- Root window wallpaper
+* Multi-monitor layouts
+* Portrait and landscape rotation
+* Mixed refresh rates
+* Primary display selection
+* Laptop-only fallback behavior
+* Event / HDMI-only behavior
+* Root window wallpaper
 
 It intentionally avoids:
-- compositors
-- GPU-specific hacks
-- WM-specific logic
+
+* compositors
+* GPU-specific hacks
+* WM-specific logic
+* monitor hotplug daemons
+
+---
+
+## Deterministic Rebuild Strategy
+
+Before applying any layout, the script explicitly disables all known outputs:
+
+```sh
+xrandr --output HDMI-1 --off 2>/dev/null || true
+xrandr --output DP-1 --off 2>/dev/null || true
+xrandr --output eDP-1 --off 2>/dev/null || true
+```
+
+This clears any hotplug auto-configuration performed by X.
+
+By rebuilding the monitor layout from a clean state, the script avoids:
+
+* unintended mirroring
+* stale rotation settings
+* cached resolutions
+* inconsistent monitor ordering in dwm
+
+The layout is always constructed from scratch.
+
+This makes behavior fully deterministic across:
+
+* sleep / wake
+* unplug / replug
+* docking changes
+* switching between home and event setups
 
 ---
 
@@ -34,35 +70,32 @@ This module assumes the following packages are installed:
 
 ```bash
 sudo pacman -S xorg-xrandr feh
-````
+```
 
-> ⚠️ **Important:**
-> If `feh` is not installed, wallpaper commands will fail silently.
+> ⚠️ If `feh` is not installed, wallpaper commands will fail silently.
 > This is the most common cause of “wallpaper not working”.
 
 ---
 
 ## Script Location
 
-The canonical script lives in this repository:
+Source of truth in the dotfiles repository:
 
 ```text
 system/display/monitor-setup.sh
 ```
 
-It is installed via symlink to:
+Installed via symlink to:
 
 ```text
 ~/.config/system/display/monitor-setup.sh
 ```
 
-This follows XDG conventions and keeps user-level scripts out of `$HOME`.
-
 ---
 
-## How It Is Used
+## How It Is Activated
 
-The display script is sourced from `~/.xinitrc`:
+The display script is executed from `~/.xinitrc`:
 
 ```sh
 # Display setup
@@ -71,15 +104,22 @@ The display script is sourced from `~/.xinitrc`:
 exec dwm
 ```
 
-> ⚠️ **Order matters:**
-> `exec dwm` **must be the last line** in `.xinitrc`.
-> Any commands placed after it will never execute.
+> ⚠️ `exec dwm` must be the last line in `.xinitrc`.
+> Anything after it will never execute.
 
-This ensures:
+The script is also injected into:
 
-* displays are configured before the WM starts
-* layouts are applied once per session
-* the configuration remains WM-agnostic
+```text
+~/.local/bin/resync-session
+```
+
+This allows you to manually reapply monitor layout when:
+
+* unplugging / replugging displays
+* waking from sleep
+* switching between docked and laptop-only modes
+
+See: **system/session/resync**
 
 ---
 
@@ -91,13 +131,15 @@ When mixing:
 * high refresh-rate monitors
 * laptops + externals
 
-Xrandr relative placement (`--left-of`, `--right-of`) becomes unreliable.
+Relative placement (`--left-of`, `--right-of`) becomes unreliable.
 
-This setup uses **explicit `--pos` coordinates** to:
+This setup uses explicit `--pos` coordinates to:
 
 * avoid overlap
 * eliminate ambiguity
 * ensure consistent geometry every startup
+
+Explicit positioning guarantees predictable layout.
 
 ---
 
@@ -112,23 +154,18 @@ feh --bg-fill "$WALLPAPER_DIR/default.png"
 
 Notes:
 
-* Absolute paths are required (no `./relative` paths)
+* Absolute paths are required
 * `feh` exits immediately after setting the root pixmap (this is normal)
 * `pgrep feh` will usually return nothing
-
-Future improvements (optional):
-
-* wallpaper randomization
-* per-host or per-monitor wallpaper scripts
-* separate wallpaper module under `bin/`
 
 ---
 
 ## Portability Notes
 
-* Output names (`eDP-1`, `DP-1`, `HDMI-1`) are used instead of generic rules
-* Conditional checks ensure safe behavior when monitors are unplugged
-* School or laptop-only setups will not inherit unwanted rotation
+* Output names (`eDP-1`, `DP-1`, `HDMI-1`) are explicitly targeted
+* Conditional checks prevent unsafe layout application
+* Laptop-only setups do not inherit external monitor logic
+* Event setups (HDMI only) remain landscape and auto-resolution
 
 ---
 
@@ -150,7 +187,7 @@ xprop -root | grep -E 'ROOTPMAP|XROOTPMAP'
 Common causes of failure:
 
 * `feh` not installed
-* wallpaper path incorrect
+* incorrect wallpaper path
 * display script placed after `exec dwm`
 * overlapping `--pos` coordinates
 
@@ -162,6 +199,7 @@ Display configuration should be:
 
 * boring
 * predictable
+* rebuilt from a clean state
 * solved once
 
-This module exists so display issues never need revisiting.
+This module exists so display behavior remains explicit and controllable — without patches, daemons, or window manager modifications.

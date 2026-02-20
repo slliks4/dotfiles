@@ -3,22 +3,24 @@
 This module configures **keyboard behavior at the X11 level**.
 
 It is:
-- window-manager agnostic
-- applied once per X session
-- safe to run repeatedly
-- independent of desktop environments
+
+* window-manager agnostic
+* applied once per X session
+* safe to run repeatedly
+* independent of desktop environments
 
 ---
 
 ## What This Module Does
 
-- Maps **Caps Lock → Escape**
-- Maps **Shift + Caps Lock → Caps Lock**
+* Maps **Caps Lock → Escape**
+* Maps **Shift + Caps Lock → Caps Lock**
 
 This improves ergonomics for:
-- terminal usage
-- Vim-style workflows
-- window manager keybindings
+
+* terminal usage
+* Vim-style workflows
+* window manager keybindings
 
 Without losing access to Caps Lock when needed.
 
@@ -30,7 +32,7 @@ Uses the XKB option:
 
 ```text
 caps:escape_shifted_capslock
-````
+```
 
 Applied via:
 
@@ -50,7 +52,9 @@ The configuration is applied by sourcing the script from `.xinitrc`:
 "$HOME/.config/system/keyboard/keyboard.sh"
 ```
 
-This ensures the mapping is active before the window manager starts.
+It is also included in the session resync script, so it can be re-applied manually if needed.
+
+See: **system/session/resync**
 
 ---
 
@@ -63,4 +67,3 @@ Keyboard configuration should be:
 * global
 
 This module exists so Caps Lock behavior is solved once and never revisited.
-

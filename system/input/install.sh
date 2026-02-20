@@ -15,6 +15,9 @@ SCRIPT_NAME="trackpad.sh"
 
 TARGET_SCRIPT="$CONFIG_DIR/$SCRIPT_NAME"
 XINITRC="$HOME/.xinitrc"
+ 
+BINPATH="$HOME/.local/bin"
+RESYNC="$BINPATH/resync-session"
 
 # ==========================
 # Dependency check
@@ -67,5 +70,41 @@ else
     echo "\"$TARGET_SCRIPT\""
   } >> "$XINITRC"
 fi
+
+# ==========================
+# Ensure ~/.local/bin exists
+# ==========================
+mkdir -p "$BINPATH"
+
+# ==========================
+# Ensure resync-session exists (base template)
+# ==========================
+if [ ! -f "$RESYNC" ]; then
+  cat <<EOF > "$RESYNC"
+#!/usr/bin/env sh
+set -e
+
+# Session modules will be injected below
+
+EOF
+  chmod +x "$RESYNC"
+fi
+
+# ==========================
+# Remove old trackpad block (idempotent)
+# ==========================
+sed -i '/# Trackpad setup start/,/# Trackpad setup end/d' "$RESYNC"
+
+# ==========================
+# Append trackpad block
+# ==========================
+cat <<EOF >> "$RESYNC"
+
+# Trackpad setup start
+"$TARGET_SCRIPT"
+# Trackpad setup end
+EOF
+
+echo "Trackpad hook added to resync-session."
 
 echo "Trackpad configuration installed."

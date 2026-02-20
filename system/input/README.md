@@ -10,6 +10,8 @@ It exists to fix common defaults that are unintuitive on laptops, such as:
 
 The configuration is applied at **X session startup**, before the window manager launches.
 
+It is also included in the session resync script, so settings can be re-applied manually if needed.
+
 ---
 
 ## What This Module Does
@@ -20,6 +22,9 @@ The configuration is applied at **X session startup**, before the window manager
 * remains window-manager agnostic
 
 All settings are applied using `xinput` and `libinput`.
+
+No daemons.
+No desktop environment integration.
 
 ---
 
@@ -48,11 +53,19 @@ The script is executed from `~/.xinitrc`:
 "$HOME/.config/system/input/trackpad.sh"
 ```
 
-This ensures:
+It is also injected into:
 
-* settings apply once per X session
-* behavior is predictable
-* no per-application hacks are needed
+```text
+~/.local/bin/resync-session
+```
+
+So it can be re-run manually when:
+
+* waking from sleep
+* reconnecting displays
+* input state behaves unexpectedly
+
+See: **system/session/resync**
 
 ---
 
@@ -64,7 +77,7 @@ Required package:
 sudo pacman -S xorg-xinput
 ```
 
-This is handled automatically by `install.sh`.
+Handled automatically by `install.sh`.
 
 ---
 
@@ -76,4 +89,4 @@ Trackpad behavior should be:
 * predictable
 * identical every login
 
-This module exists so input quirks never need revisiting.
+This module exists so input quirks are solved once and never revisited.
