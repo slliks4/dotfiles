@@ -35,6 +35,7 @@ fi
 
 # Aliases
 alias vim=nvim
+alias vi=nvim
 alias py=python
 
 # NOTE: FROM DOWN BELOW ARE ADDED BY THEIR INDIVIDUAL SCRIPTS
