@@ -1,0 +1,67 @@
+#!/bin/sh
+# xrecord toggle | toggle-mic | stop
+
+set -e
+
+DIR="$HOME/Videos/Recordings"
+mkdir -p "$DIR"
+
+STAMP="$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+FILE="$DIR/$STAMP"
+
+PID_FILE="/tmp/xrecord.pid"
+
+is_recording() {
+    [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null
+}
+
+case "$1" in
+    toggle)
+        if is_recording; then
+            kill -INT "$(cat "$PID_FILE")"
+            rm -f "$PID_FILE"
+            notify-send -t 1500 "Recording stopped"
+        else
+            GEOM="$(slop -f "%x %y %w %h")" || exit 1
+            set -- $GEOM
+
+            ffmpeg -video_size "${3}x${4}" \
+                   -framerate 60 \
+                   -f x11grab \
+                   -i ":0.0+${1},${2}" \
+                   -c:v libx264 -preset ultrafast \
+                   "$FILE" >/dev/null 2>&1 &
+
+            echo $! > "$PID_FILE"
+            notify-send -t 1500 "Screen recording started"
+        fi
+        ;;
+
+    toggle-mic)
+        if is_recording; then
+            kill -INT "$(cat "$PID_FILE")"
+            rm -f "$PID_FILE"
+            notify-send -t 1500 "Recording stopped"
+        else
+            GEOM="$(slop -f "%x %y %w %h")" || exit 1
+            set -- $GEOM
+
+            ffmpeg -video_size "${3}x${4}" \
+                   -framerate 60 \
+                   -f x11grab \
+                   -i ":0.0+${1},${2}" \
+                   -f pulse -i default \
+                   -c:v libx264 -preset ultrafast \
+                   -c:a aac \
+                   "$FILE" >/dev/null 2>&1 &
+
+            echo $! > "$PID_FILE"
+            notify-send -t 1500 "Screen + Mic recording started"
+        fi
+        ;;
+    *)
+        echo "Usage:"
+        echo "  $0 toggle"
+        echo "  $0 toggle-mic"
+        ;;
+esac
