@@ -76,12 +76,27 @@ This is **not required** and has no effect on modern UEFI systems.
 
 # Formatting Partitions
 
-After partitioning, create filesystems.
+After partitioning, create filesystems.We also include labels because filesystem labels provide a **human-readable identifier** for partitions.
+This makes mounting disks easier and avoids relying on device names such as `/dev/sdX`, which may change between boots.
+
+Example:
+
+Instead of mounting:
+
+```bash
+mount /dev/sda3 /mnt
+```
+
+You can mount using the label:
+
+```bash
+mount LABEL=root /mnt
+```
 
 ### EFI Partition
 
 ```bash
-mkfs.vfat -F32 /dev/sdX1
+mkfs.vfat -F32 -n EFI /dev/sdX1
 ```
 
 ---
@@ -89,7 +104,7 @@ mkfs.vfat -F32 /dev/sdX1
 ### Boot Partition
 
 ```bash
-mkfs.ext4 /dev/sdX2
+mkfs.ext4 -L boot /dev/sdX2
 ```
 
 ---
@@ -97,7 +112,7 @@ mkfs.ext4 /dev/sdX2
 ### Root Partition
 
 ```bash
-mkfs.ext4 /dev/sdX3
+mkfs.ext4 -L root /dev/sdX3
 ```
 
 ---
@@ -105,20 +120,31 @@ mkfs.ext4 /dev/sdX3
 ### Home Partition (Optional)
 
 ```bash
-mkfs.btrfs /dev/sdX4
+mkfs.btrfs -L home /dev/sdX4
 ```
-
-Used to isolate user files from the system.
 
 ---
 
 ### Development Partition (Optional)
 
 ```bash
-mkfs.ext4 /dev/sdX5
+mkfs.ext4 -L devspace /dev/sdX5
 ```
+---
 
-Used for development environments or large project files.
+# Disk diagram when done
+
+Example:
+
+```
+Disk: /dev/nvme0n1
+
+├─ nvme0n1p1   512M   EFI System       → /boot/efi
+├─ nvme0n1p2   1G     Linux filesystem → /boot
+├─ nvme0n1p3   150G   Linux filesystem → /
+├─ nvme0n1p4   200G   btrfs            → /home
+└─ nvme0n1p5   rest   ext4             → /devspace
+```
 
 ---
 
@@ -165,7 +191,7 @@ iwctl --passphrase "password" station wlan0 connect "network-name"
 SSH can be enabled to complete the installation from another machine.
 
 SSH setup instructions are located here:
-- [../dev/ssh/README.md](../dev/ssh/README.md)
+- [../dev/ssh/README.md](ssh/README.md)
 
 ---
 
@@ -198,23 +224,4 @@ This keeps the system predictable and easy to build on.
 # Next Step
 
 Bootloader setup.
-
-```
-../grub/README.md
-```
-
----
-
-**disk diagram**
-
-Example:
-
-```
-Disk: /dev/nvme0n1
-
-├─ nvme0n1p1   512M   EFI System       → /boot/efi
-├─ nvme0n1p2   1G     Linux filesystem → /boot
-├─ nvme0n1p3   150G   Linux filesystem → /
-├─ nvme0n1p4   200G   btrfs            → /home
-└─ nvme0n1p5   rest   ext4             → /devspace
-```
+- [../grub/README.md](grub/README.md)
