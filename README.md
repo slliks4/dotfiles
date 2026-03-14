@@ -24,7 +24,7 @@ Includes (high-level):
 - first successful boot
 
 📄 Detailed guide:  
-- [arch/README.md](arch/README.md)
+- [arch/arch/README.md)
 
 ---
 
