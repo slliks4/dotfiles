@@ -165,16 +165,7 @@ iwctl --passphrase "password" station wlan0 connect "network-name"
 SSH can be enabled to complete the installation from another machine.
 
 SSH setup instructions are located here:
-
-```
-.dotfiles/dev/ssh
-```
-
-or
-
-```
-../dev/ssh/README.md
-```
+- [../dev/ssh/README.md](../dev/ssh/README.md)
 
 ---
 
