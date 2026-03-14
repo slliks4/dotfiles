@@ -224,4 +224,4 @@ This keeps the system predictable and easy to build on.
 # Next Step
 
 Bootloader setup.
-- [../grub/README.md](grub/README.md)
+- [grub/README.md](../grub/README.md)
