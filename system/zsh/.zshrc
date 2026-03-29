@@ -56,3 +56,4 @@ source "/home/scaramouche/.dotfiles/dev/python/shell-guards.zsh"
 
 # wiki-tui
 alias wiki="wiki-tui"
+export KATTIS_DIR="$HOME/kattis"

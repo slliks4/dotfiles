@@ -1,0 +1,59 @@
+#!/bin/sh
+
+# ==========================
+# Config
+# ==========================
+
+BAT_PATH=$(ls /sys/class/power_supply/BAT* 2>/dev/null | head -n1)
+[ -z "$BAT_PATH" ] && exit 0
+
+WARN_STATE="/tmp/battery_warn_30"
+CRIT_STATE="/tmp/battery_crit_15"
+
+WARN_THRESHOLD=30
+CRIT_THRESHOLD=15
+
+# ==========================
+# Loop
+# ==========================
+
+while true; do
+    BAT=$(cat "$BAT_PATH/capacity")
+    STATUS=$(cat "$BAT_PATH/status")
+
+    # --------------------------
+    # 30% Warning (Discharging)
+    # --------------------------
+    if [ "$STATUS" = "Discharging" ] && \
+       [ "$BAT" -le "$WARN_THRESHOLD" ] && \
+       [ "$BAT" -gt "$CRIT_THRESHOLD" ] && \
+       [ ! -f "$WARN_STATE" ]; then
+
+        notify-send -u normal "Battery Low" "Battery at ${BAT}% (unplugged)"
+        touch "$WARN_STATE"
+    fi
+
+    # --------------------------
+    # 15% Critical (Discharging)
+    # --------------------------
+    if [ "$STATUS" = "Discharging" ] && \
+       [ "$BAT" -le "$CRIT_THRESHOLD" ] && \
+       [ ! -f "$CRIT_STATE" ]; then
+
+        powerprofilesctl set power-saver
+        light -S 30 >/dev/null 2>&1
+
+        notify-send -u critical "Battery Critical" "${BAT}% remaining. Power saver enabled."
+
+        touch "$CRIT_STATE"
+    fi
+
+    # --------------------------
+    # Reset states when charging or battery rises
+    # --------------------------
+    if [ "$STATUS" != "Discharging" ] || [ "$BAT" -gt "$WARN_THRESHOLD" ]; then
+        rm -f "$WARN_STATE" "$CRIT_STATE"
+    fi
+
+    sleep 60
+done

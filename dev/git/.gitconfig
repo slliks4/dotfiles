@@ -1,0 +1,15 @@
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[init]
+	defaultBranch = main
+[user]
+	email = skillsnwokolo372@gmail.com
+	name = Skills Anthony
+[diff]
+	tool = nvimdiff
+[difftool]
+	prompt = false
