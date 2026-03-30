@@ -4,7 +4,7 @@
 # Config
 # ==========================
 
-BAT_PATH=$(ls /sys/class/power_supply/BAT* 2>/dev/null | head -n1)
+BAT_PATH="/sys/class/power_supply/BAT0"
 [ -z "$BAT_PATH" ] && exit 0
 
 WARN_STATE="/tmp/battery_warn_30"
@@ -55,5 +55,5 @@ while true; do
         rm -f "$WARN_STATE" "$CRIT_STATE"
     fi
 
-    sleep 60
+    sleep 5
 done
