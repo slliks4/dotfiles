@@ -118,6 +118,13 @@ vim.lsp.config("svls", {
     on_attach = on_attach,
 })
 
+-- vim.lsp.config("clangd", {
+--     cmd = { "clangd" },
+--     filetypes = { "c", "cpp", "objc", "objcpp" },
+--     capabilities = capabilities, -- ❗ missing
+--     on_attach = on_attach,
+-- })
+
 vim.lsp.config("asm-lsp", {
     cmd = { "asm-lsp" },
     filetypes = { "asm", "s", "S" },

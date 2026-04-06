@@ -86,7 +86,7 @@ fi
 DPI=96
 
 if xrandr | grep -q " connected.*3840x2160"; then
-    DPI=144
+    DPI=150
 fi
 
 CURRENT_DPI=$(xrdb -query | grep -i Xft.dpi | awk '{print $2}')
