@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Main Terminal
+Exec=main-terminal
+Type=Application
+Categories=Terminal;
+Terminal=false

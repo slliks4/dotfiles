@@ -2,8 +2,8 @@
 # Window
 # -------------------------
 [window]
-opacity=0.95
-decorations = "None"
+# opacity=1
+# decorations = "None"
 
 [window.padding]
 x = 8
@@ -13,7 +13,7 @@ y = 6
 # Font
 # -------------------------
 [font]
-size = 20.0
+size = 16
 
 [font.normal]
 family = "Terminus"
