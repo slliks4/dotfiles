@@ -111,4 +111,4 @@ xrandr --output HDMI-0 \
 # # ==========================
 
 WALLPAPER_DIR="$HOME/.config/system/display/wallpaper"
-feh --bg-fill "$WALLPAPER_DIR/bg1.jpg"
+feh --bg-fill "$WALLPAPER_DIR/default.png"
