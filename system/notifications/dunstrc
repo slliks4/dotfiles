@@ -12,8 +12,8 @@ separator_color = frame
 font = Terminus 10
 
 background = "#0B0F0B"
-foreground = "#A8E6A3"   # softer green (not neon)
-frame_color = "#4CAF50"  # muted green frame
+foreground = "#FFB000"   # amber text (global)
+frame_color = "#3A2A00"  # dark amber frame
 
 notification_limit = 5
 transparency = 0
@@ -23,25 +23,25 @@ markup = full
 format = "<b>%s</b>\n%b"
 
 # -----------------------------
-# Low → ORANGE (attention)
+# Low → ORANGE frame only
 # -----------------------------
 [urgency_low]
 background = "#0B0F0B"
-foreground = "#E6A84A"   # soft orange
+foreground = "#FFB000"
 frame_color = "#A66A00"
 
 # -----------------------------
-# Normal → GREEN (default)
+# Normal → GREEN frame only
 # -----------------------------
 [urgency_normal]
 background = "#0B0F0B"
-foreground = "#A8E6A3"
+foreground = "#FFB000"
 frame_color = "#4CAF50"
 
 # -----------------------------
-# Critical → RED (alerts)
+# Critical → RED frame only
 # -----------------------------
 [urgency_critical]
 background = "#140000"
-foreground = "#FF6B6B"
+foreground = "#FFB000"
 frame_color = "#CC3333"
