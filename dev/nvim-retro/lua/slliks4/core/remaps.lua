@@ -23,8 +23,12 @@ vim.keymap.set("n", "<C-j>", "<C-w>j")
 vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
--- Zoom (tmux-style)
-vim.keymap.set("n", "<C-\\>", "<C-w>o")
+-- reload and sync updates from disk
+vim.keymap.set('n', '<leader><leader>', function()
+    vim.cmd('checktime')   -- Sync files with disk
+    vim.cmd('edit!')       -- Reload current buffer
+    print("Files refreshed!") 
+end, { desc = 'Refresh current file and disk' })
 
 -- Explorer
 vim.keymap.set("n", "<leader>e", vim.cmd.Ex)

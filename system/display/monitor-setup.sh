@@ -18,13 +18,18 @@
 # Disable all at first
 xrandr --output HDMI-0 --off 2>/dev/null || true
 xrandr --output DP-0 --off 2>/dev/null || true
-# xrandr --output eDP-1 --off 2>/dev/null || true
+xrandr --output DP-2 --off 2>/dev/null || true
 
 xrandr --output DP-0 \
     --mode 1920x1080 \
     --rate 165 \
     --pos 0x0 \
     --primary
+
+xrandr --output DP-2 \
+    --mode 1920x1080 \
+    --rotate left \
+    --left-of DP-0
 
 xrandr --output HDMI-0 \
     --auto \
