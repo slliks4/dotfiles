@@ -184,6 +184,7 @@ bar {
         }
 }
 
+bindsym $mod+m move container to mark main; [con_mark="main"] focus
 
 # Screenshot bind
 bindsym $mod+bracketright exec screenshot
@@ -193,4 +194,3 @@ bindsym $mod+bracketleft exec screenshot http
 for_window [class="Alacritty" title="scratch-terminal"] floating enable, resize set 70 ppt 70 ppt, move position center, move scratchpad
 bindsym $mod+backslash [title="scratch-terminal"] scratchpad show
 # scratch terminal end
-
