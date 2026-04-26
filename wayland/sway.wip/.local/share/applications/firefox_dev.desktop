@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=fdev
+Exec=/home/voldemort/.config/scripts/apps/firefox_dev.sh
+Icon=firefox-developer-edition
+Type=Application
+Categories=Network;WebBrowser;
+StartupWMClass=Firefox Developer Edition
+

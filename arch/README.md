@@ -1,99 +1,88 @@
 # Arch Linux — Base Installation
 
-This document describes the **minimal Arch Linux installation** used for this system.
+This document describes the minimal Arch Linux installation used for this system.
 
-The purpose of this stage is to produce a **clean, bootable base system** with networking working and no unnecessary services installed.
+The goal of this stage is to produce a **clean, bootable base system**
+with working networking and no unnecessary services.
 
-At the end of this stage the system will have:
+At the end of this stage, the system will have:
 
-* a working Arch Linux installation
-* functional networking
-* a bootloader-ready disk layout
-* no desktop environment
-* no audio stack
+- a working Arch Linux installation
+- functional networking
+- a bootloader-ready disk layout
+- no desktop environment
+- no audio stack
 
-Everything else is configured later in separate modules.
+All additional components are configured in later modules.
 
 ---
 
-# Disk Layout
+## Disk Layout
 
-Partitioning was performed manually using `fdisk`.
+Partitioning is performed manually.
 
 ```bash
 fdisk /dev/sdX
-```
+````
 
-Verify the layout afterwards:
+Verify the result:
 
 ```bash
 lsblk
 ```
 
-Replace `sdX` and partition numbers with the correct values for your disk.
+Replace `sdX` with the correct device.
 
 ---
 
-# Partition Scheme
+## Partition Scheme
 
-| Mount Point              | Filesystem | Purpose                      |
-| ------------------------ | ---------- | ---------------------------- |
-| `/boot/efi`              | FAT32      | UEFI firmware boot partition |
-| `/boot`                  | ext4       | Kernel and bootloader files  |
-| `/`                      | ext4       | Root filesystem              |
-| `/home` *(optional)*     | btrfs      | User data                    |
-| `/devspace` *(optional)* | ext4       | Development workspace        |
+| Mount Point              | Filesystem | Purpose                 |
+| ------------------------ | ---------- | ----------------------- |
+| `/boot/efi`              | FAT32      | UEFI firmware partition |
+| `/boot`                  | ext4       | Kernel and boot files   |
+| `/`                      | ext4       | Root filesystem         |
+| `/home` *(optional)*     | btrfs      | User data               |
+| `/devspace` *(optional)* | ext4       | Development workspace   |
 
 ---
 
-# Partition Flags (Important)
+## Partition Flags
 
-Only **one partition requires flags**.
+Only one partition requires flags.
 
 ### EFI Partition
 
-The EFI partition must have:
+Must be set as:
 
-* `esp`
-* `boot`
+* `EFI System`
+* flags: `esp`, `boot`
 
-Example using `fdisk`:
-
-```
-Type: EFI System
-```
-
-This is required for **UEFI firmware to detect the bootloader**.
+This is required for UEFI firmware to detect the bootloader.
 
 No other partitions require flags.
 
-Common mistake:
-
-People often try to set a **boot flag on `/boot`**.
-This is **not required** and has no effect on modern UEFI systems.
+Do not set a boot flag on `/boot`.
+This has no effect on UEFI systems.
 
 ---
 
-# Formatting Partitions
+## Formatting Partitions
 
-After partitioning, create filesystems.We also include labels because filesystem labels provide a **human-readable identifier** for partitions.
-This makes mounting disks easier and avoids relying on device names such as `/dev/sdX`, which may change between boots.
+Filesystems are created with labels.
+
+Labels allow mounting by name instead of device path, avoiding issues
+with changing device identifiers.
 
 Example:
-
-Instead of mounting:
-
-```bash
-mount /dev/sda3 /mnt
-```
-
-You can mount using the label:
 
 ```bash
 mount LABEL=root /mnt
 ```
 
-### EFI Partition
+---
+
+### EFI
 
 ```bash
 mkfs.vfat -F32 -n EFI /dev/sdX1
@@ -101,7 +90,7 @@ mkfs.vfat -F32 -n EFI /dev/sdX1
 
 ---
 
-### Boot Partition
+### Boot
 
 ```bash
 mkfs.ext4 -L boot /dev/sdX2
@@ -109,7 +98,7 @@ mkfs.ext4 -L boot /dev/sdX2
 
 ---
 
-### Root Partition
+### Root
 
 ```bash
 mkfs.ext4 -L root /dev/sdX3
@@ -117,7 +106,7 @@ mkfs.ext4 -L root /dev/sdX3
 
 ---
 
-### Home Partition (Optional)
+### Home (Optional)
 
 ```bash
 mkfs.btrfs -L home /dev/sdX4
@@ -125,16 +114,15 @@ mkfs.btrfs -L home /dev/sdX4
 
 ---
 
-### Development Partition (Optional)
+### Devspace (Optional)
 
 ```bash
 mkfs.ext4 -L devspace /dev/sdX5
 ```
+
 ---
 
-# Disk diagram when done
-
-Example:
+## Example Layout
 
 ```
 Disk: /dev/nvme0n1
@@ -148,29 +136,23 @@ Disk: /dev/nvme0n1
 
 ---
 
-# Networking (Live ISO)
+## Networking (Live ISO)
 
-Ethernet connections usually work automatically.
+Ethernet is typically configured automatically.
 
-For Wi-Fi connections use `iwctl`.
+For Wi-Fi, use `iwctl`.
 
 ---
 
-### List interfaces
+### Identify interface
 
 ```bash
 ip a
 ```
 
-Example wireless interface:
-
-```
-wlan0
-```
-
 ---
 
-### Scan for networks
+### Scan networks
 
 ```bash
 iwctl station wlan0 get-networks
@@ -178,7 +160,7 @@ iwctl station wlan0 get-networks
 
 ---
 
-### Connect to a network
+### Connect
 
 ```bash
 iwctl --passphrase "password" station wlan0 connect "network-name"
@@ -186,42 +168,44 @@ iwctl --passphrase "password" station wlan0 connect "network-name"
 
 ---
 
-# Optional: Enable SSH
+## Optional: SSH Access
 
-SSH can be enabled to complete the installation from another machine.
+SSH can be enabled to continue installation remotely.
 
-SSH setup instructions are located here:
-- [ssh/README.md](../dev/ssh/README.md)
+See:
+
+* `shared/dev/ssh/README.md`
 
 ---
 
-# Services Not Enabled Yet
+## Services
 
-The following services are intentionally **not enabled** during base installation:
+No additional services are enabled at this stage.
+
+The following are intentionally excluded:
 
 * Bluetooth
-* Printing
-* Audio services
+* printing
+* audio
 
-These will be configured later alongside the **window manager and desktop stack**.
+These are configured later, depending on the chosen environment.
 
 ---
 
-# Result
+## Result
 
-At this stage the system provides:
+This stage produces:
 
-* a **minimal Arch Linux environment**
+* a minimal Arch Linux system
 * working networking
-* a **clean base system**
-* no desktop environment
-* no unnecessary background services
+* a predictable base environment
 
-This keeps the system predictable and easy to build on.
+No display stack or user-level services are present.
 
 ---
 
-# Next Step
+## Next Step
 
-Bootloader setup.
-- [grub/README.md](../grub/README.md)
+Bootloader setup:
+
+* `grub/README.md`

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=BlueJ
+Comment=Java IDE for learning and teaching
+Exec=/home/voldemort/opt/bluej/bluej
+Icon=/home/voldemort/opt/bluej/icons/bluej-icon-512-embossed.png
+Terminal=false
+Type=Application
+Categories=Development;Education;Java;
+StartupNotify=true

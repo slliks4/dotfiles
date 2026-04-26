@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Add all ~/opt/* folders to PATH
+export PATH="$(find ~/opt -mindepth 1 -maxdepth 1 -type d | tr '\n' ':' | sed 's/:$//'):$PATH"
+
+# Function to check if curl is installed
+check_curl() {
+    if ! command -v curl &> /dev/null; then
+        echo "❌ 'curl' is not installed. Please install it to proceed."
+        exit 1
+    fi
+}
+
+# Function to check internet connectivity
+check_internet() {
+    echo "🌐 Checking internet connection..."
+    if ! ping -q -c 1 -W 1 1.1.1.1 >/dev/null; then
+        echo "❌ No internet connection. Exiting."
+        exit 1
+    fi
+    echo "✅ Internet connection detected."
+}
+
+# Function to update Discord
+update_discord() {
+    echo "🔄 Updating Discord..."
+
+    # Temp dir for download
+    TMP_DIR=$(mktemp -d)
+
+    # Download latest Discord tar.gz
+    echo "📦 Downloading Discord..."
+    curl -L -o "$TMP_DIR/discord.tar.gz" "https://discord.com/api/download?platform=linux&format=tar.gz"
+
+    # Extract into ~/opt/discord (overwrite)
+    echo "📂 Extracting to ~/opt/discord..."
+    rm -rf ~/opt/discord
+    mkdir -p ~/opt
+    tar -xzf "$TMP_DIR/discord.tar.gz" -C ~/opt
+    mv ~/opt/Discord ~/opt/discord
+
+    echo "✅ Discord updated at ~/opt/discord"
+}
+
+# Run the steps
+check_curl
+# check_internet
+update_discord

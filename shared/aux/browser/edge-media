@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+# Force GTK dark theme for this app only
+export GTK_THEME=Adwaita:dark
+
+exec microsoft-edge-stable \
+  --user-data-dir="$HOME/.config/edge-media" \
+  --no-first-run \
+  --no-default-browser-check \
+  --disable-features=msEdgeStartupBoost \
+  --disable-background-networking \
+  --disable-sync \
+  --force-dark-mode \
+  --disable-extensions \
+  --disable-component-update \
+  --disable-features=Translate \
+  "$@"

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+STATE_FILE="/tmp/i3_split_toggle"
+
+# default state
+if [ ! -f "$STATE_FILE" ]; then
+    echo "main" > "$STATE_FILE"
+fi
+
+STATE="$(cat "$STATE_FILE")"
+
+if [ "$STATE" = "main" ]; then
+    # shrink main → focus aside
+    i3-msg "resize set width 35 ppt"
+    echo "aside" > "$STATE_FILE"
+else
+    # expand main
+    i3-msg "resize set width 65 ppt"
+    echo "main" > "$STATE_FILE"
+fi

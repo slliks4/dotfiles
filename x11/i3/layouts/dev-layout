@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+# -----------------------------
+# Helpers
+# -----------------------------
+has_window() {
+    local query="$1"
+    i3-msg -t get_tree | jq -e "$query" >/dev/null
+}
+
+wait_for_window() {
+    local query="$1"
+    while ! i3-msg -t get_tree | jq -e "$query" >/dev/null; do
+        sleep 0.05
+    done
+}
+
+# =========================================================
+# PART 1: AUX WORKSPACE (workspace 1 → portrait stack)
+# =========================================================
+
+i3-msg "workspace 1"
+
+# Ensure apps exist
+if ! has_window '.. | objects | select(.window_properties.class? == "zen")'; then
+    i3-msg 'exec zen-browser'
+    wait_for_window '.. | objects | select(.window_properties.class? == "zen")'
+fi
+
+if ! has_window '.. | objects | select(.window_properties.class? == "pavucontrol")'; then
+    i3-msg 'exec pavucontrol'
+    wait_for_window '.. | objects | select(.window_properties.class? == "pavucontrol")'
+fi
+
+# Move to workspace
+i3-msg '[class="zen"] move to workspace 1'
+i3-msg '[class="pavucontrol"] move to workspace 1'
+
+i3-msg "workspace 1"
+
+# Mark roles
+i3-msg '[class="zen"] mark --replace zen'
+i3-msg '[class="pavucontrol"] mark --replace pavu'
+
+# Stack → split vertically → resize
+i3-msg 'layout stacking'
+
+i3-msg '
+    [con_mark="zen"] focus;
+    focus parent;
+    split v
+'
+
+i3-msg '[con_mark="pavu"] move down'
+
+i3-msg '
+    [con_mark="zen"] focus;
+    focus parent;
+    resize set height 80 ppt
+'
+
+# =========================================================
+# PART 2: DEV WORKSPACE (workspace 0 → main layout)
+# =========================================================
+
+# Reset scratch terminal
+i3-msg '[title="scratch-terminal"] kill'
+i3-msg 'exec --no-startup-id scratch-terminal'
+
+# Clean workspace 0
+i3-msg "workspace 0"
+i3-msg '[workspace="0"] move container to workspace 8'
+i3-msg "workspace 0"
+
+# Ensure apps exist
+if ! has_window '.. | objects | select(.window_properties.class? == "Alacritty" and .name? == "main-terminal")'; then
+    i3-msg 'exec alacritty --title main-terminal'
+    wait_for_window '.. | objects | select(.window_properties.class? == "Alacritty" and .name? == "main-terminal")'
+fi
+
+if ! has_window '.. | objects | select(.window_properties.class? == "firefox-developer-edition")'; then
+    i3-msg 'exec firefox-developer-edition'
+    wait_for_window '.. | objects | select(.window_properties.class? == "firefox-developer-edition")'
+fi
+
+if ! has_window '.. | objects | select(.window_properties.class? == "qutebrowser")'; then
+    i3-msg 'exec qutebrowser'
+    wait_for_window '.. | objects | select(.window_properties.class? == "qutebrowser")'
+fi
+
+# Move everything
+i3-msg '[title="main-terminal"] move to workspace 0'
+i3-msg '[class="firefox-developer-edition"] move to workspace 0'
+i3-msg '[class="qutebrowser"] move to workspace 0'
+
+i3-msg "workspace 0"
+
+# Stack everything first
+i3-msg 'layout stacking'
+
+# Mark roles (replace ensures no duplication)
+i3-msg '[title="main-terminal"] mark --replace main'
+i3-msg '[class="firefox-developer-edition"] mark --replace aside'
+
+# Put qutebrowser into aside container
+i3-msg '[class="qutebrowser"] move container to mark aside'
+
+# Create main split (left/right)
+i3-msg '
+    [con_mark="main"] focus;
+    focus parent;
+    split h
+'
+
+# Move main to right
+i3-msg '[con_mark="main"] move right'
+
+# Create vertical split inside main
+i3-msg '
+    [con_mark="main"] focus;
+    split v;
+    layout tabbed
+'
+
+# Ensure aside stays stacked
+i3-msg '
+    [con_mark="aside"] focus;
+    layout stacking
+'
+
+# Resize main (dominant)
+i3-msg '
+    [con_mark="main"] focus;
+    focus parent;
+    resize set width 65 ppt;
+    [con_mark="main"] focus
+'

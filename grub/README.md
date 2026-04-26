@@ -1,33 +1,47 @@
 # GRUB Setup
 
-Minimal, reproducible **GRUB setup for Arch Linux on UEFI systems**.
+Minimal, reproducible GRUB setup for Arch Linux on UEFI systems.
 
 Supports:
-
-* Arch Linux
-* Windows dual boot
-* Separate EFI partitions
-* Custom GRUB themes
-* Firmware fallback workaround
+- Arch Linux
+- Windows dual boot (same or separate EFI)
+- multiple disks / multiple EFI partitions
+- custom GRUB themes
+- firmware fallback quirks
 
 ---
 
-# 1. Install Required Packages
+## Context
+
+This step assumes:
+
+- base system is installed
+- EFI partition exists and is mounted at `/boot/efi`
+
+If not, complete:
+
+- `arch/README.md`
+
+---
+
+## 1. Install Required Packages
 
 ```bash
 sudo pacman -Syu
 sudo pacman -S grub efibootmgr os-prober
-```
-
-`os-prober` is required for Windows detection.
+````
 
 ---
 
-# 2. Mount EFI Partitions
+## 2. Mount EFI Partition
 
-### Arch EFI
+List EFI partitions:
 
-Verify:
+```bash
+lsblk -f | grep vfat
+```
+
+Verify mount:
 
 ```bash
 findmnt /boot/efi
@@ -41,26 +55,24 @@ sudo mount /dev/nvme0n1p1 /boot/efi
 
 ---
 
-### Windows EFI
+## Important
 
-If Windows uses a **separate EFI partition**, mount it before generating the GRUB config.
+If multiple EFI partitions exist:
 
-Identify EFI partitions:
+* GRUB must be installed to the partition mounted at `/boot/efi`
+* do not mix EFI partitions across disks
 
-```bash
-lsblk -f | grep vfat
-```
+Most boot issues come from this mismatch.
 
-Create mount point:
+---
+
+## 3. Mount Windows EFI (Optional)
+
+If Windows uses a different EFI partition:
 
 ```bash
 sudo mkdir -p /boot/efi/win-efi
-```
-
-Mount Windows EFI:
-
-```bash
-sudo mount /dev/nvme0nxpx /boot/efi/win-efi
+sudo mount /dev/sdX1 /boot/efi/win-efi
 ```
 
 Verify:
@@ -69,7 +81,7 @@ Verify:
 ls /boot/efi/win-efi/EFI/Microsoft/Boot
 ```
 
-You should see:
+Expected:
 
 ```
 bootmgfw.efi
@@ -77,31 +89,56 @@ bootmgfw.efi
 
 ---
 
-# 3. Clean GRUB Reinstallation (Recommended)
-
-If GRUB was previously installed incorrectly, clean it first.
-
-This **does not affect Windows**.
+## 4. Clean GRUB Installation
 
 ```bash
 sudo rm -rf /boot/grub
 sudo rm -rf /boot/efi/EFI/GRUB
 ```
 
-Install GRUB:
+Install:
 
 ```bash
 sudo grub-install \
   --target=x86_64-efi \
   --efi-directory=/boot/efi \
-  --bootloader-id=GRUB
+  --bootloader-id=GRUB \
+  --recheck
 ```
 
 ---
 
-# 4. Enable Windows Detection
+## 5. Verify Installation
 
-Edit GRUB defaults:
+```bash
+ls /boot/efi/EFI
+```
+
+Expected:
+
+```
+GRUB
+Microsoft
+BOOT
+```
+
+Check binary:
+
+```bash
+ls /boot/efi/EFI/GRUB/grubx64.efi
+```
+
+---
+
+### If Missing
+
+GRUB is installed incorrectly.
+
+Re-run installation.
+
+---
+
+## 6. Enable OS Detection (Optional)
 
 ```bash
 sudo nvim /etc/default/grub
@@ -113,117 +150,146 @@ Ensure:
 GRUB_DISABLE_OS_PROBER=false
 ```
 
----
-
-# 5. Generate GRUB Configuration
+Generate config:
 
 ```bash
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-Expected output:
+---
 
-```
-Found Windows Boot Manager
-```
+## 7. Fix EFI Entries
 
-> The theme installer in this repo also regenerates the GRUB config.
+List entries:
+
+```bash
+sudo efibootmgr -v
+```
 
 ---
 
-# 6. Install GRUB Theme
-
-Themes are installed from the dotfiles repository.
+### Remove Broken Entries
 
 ```bash
-git clone https://github.com/slliks4/.dotfiles.git
-cd .dotfiles/grub
-sudo ./install.sh
+sudo efibootmgr -b XXXX -B
 ```
-
-The installer:
-
-* scans available themes
-* installs selected theme
-* updates `GRUB_THEME`
-* regenerates GRUB config
 
 ---
 
-# 7. Firmware Fallback Workaround
-
-Many firmware implementations (HP, MSI, Dell, Lenovo, ASUS, etc.) may ignore the saved GRUB entry and boot **Windows Boot Manager** first.
-
-UEFI defines a fallback loader at:
-
-```
-EFI/Boot/BootX64.efi
-```
-
-Copy GRUB there:
+### Create GRUB Entry
 
 ```bash
-sudo mkdir -p /boot/efi/win-efi/EFI/Boot
-sudo cp /boot/efi/EFI/GRUB/grubx64.efi \
-        /boot/efi/win-efi/EFI/Boot/BootX64.efi
+sudo efibootmgr -c \
+  -d /dev/nvme0n1 \
+  -p 1 \
+  -L GRUB \
+  -l '\EFI\GRUB\grubx64.efi'
 ```
 
-Temporarily move the Windows loader:
+---
+
+### Set Boot Order
+
+```bash
+sudo efibootmgr -o GRUB_ID,WINDOWS_ID
+```
+
+---
+
+## 8. Firmware Fallback
+
+Some firmware ignores boot order.
+
+Install fallback loader:
+
+```bash
+sudo grub-install \
+  --target=x86_64-efi \
+  --efi-directory=/boot/efi \
+  --removable
+```
+
+---
+
+### Windows Override (Strict Firmware Fix)
+
+Backup:
 
 ```bash
 sudo mv /boot/efi/win-efi/EFI/Microsoft/Boot/bootmgfw.efi \
         /boot/efi/win-efi/EFI/Microsoft/Boot/bootmgfw.efi.bak
 ```
 
-Reboot once.
+Replace:
 
-Firmware will use the fallback loader, which now launches GRUB.
+```bash
+sudo cp /boot/efi/EFI/GRUB/grubx64.efi \
+        /boot/efi/win-efi/EFI/Microsoft/Boot/bootmgfw.efi
+```
 
 ---
 
-### Restore Windows Bootloader
-
-After booting back into Arch:
+### Restore (Optional)
 
 ```bash
 sudo mv /boot/efi/win-efi/EFI/Microsoft/Boot/bootmgfw.efi.bak \
         /boot/efi/win-efi/EFI/Microsoft/Boot/bootmgfw.efi
 ```
 
-Windows remains bootable through GRUB.
-
 ---
 
-# Optional: Set Default Kernel
+## 9. Theme Installation
 
-If GRUB boots `linux-lts` first:
-
-```bash
-sudo nvim /etc/default/grub
-```
-
-Example:
-
-```
-GRUB_DEFAULT="Advanced options for Arch Linux>Arch Linux, with Linux"
-```
-
-Regenerate config if needed:
+From repository root:
 
 ```bash
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+cd grub
+sudo ./install.sh
+```
+
+Themes are located in:
+
+```
+grub/themes/
 ```
 
 ---
 
-# Verify
+## 10. Pre-Reboot Check
 
-After reboot:
+```bash
+findmnt /boot/efi
+ls /boot/efi/EFI
+sudo efibootmgr -v
+```
 
-* GRUB menu appears
-* theme loads correctly
-* Arch boots normally
-* Windows entry works
+Ensure:
+
+* `/boot/efi` is correct
+* `/EFI/GRUB/grubx64.efi` exists
+* GRUB entry is valid
+* GRUB is first in BootOrder
+
+---
+
+## Common Failure
+
+```
+grub rescue>
+```
+
+Cause:
+
+```
+boot entry exists
+but target file does not
+```
+
+Fix:
+
+* reinstall GRUB
+* verify EFI paths
+* clean incorrect entries
 
 ---
 
@@ -233,5 +299,23 @@ After reboot:
 EFI
 ├─ EFI/GRUB/grubx64.efi
 ├─ EFI/Microsoft/Boot/bootmgfw.efi
-└─ EFI/Boot/BootX64.efi   ← fallback loader
+└─ EFI/Boot/BOOTX64.EFI
 ```
+
+---
+
+## Rule
+
+GRUB works only if:
+
+```
+boot entry → correct partition → correct file → file exists
+```
+
+---
+
+## Next Step
+
+Continue with system setup:
+
+* `shared/system/README.md`

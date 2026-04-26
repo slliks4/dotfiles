@@ -1,0 +1,6 @@
+show=drun
+term=foot
+allow_images=false
+prompt="Search:"
+width=400
+lines=10

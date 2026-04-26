@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -e
+
+# ==========================
+# Usage
+# ==========================
+if [ $# -lt 1 ]; then
+    cat <<EOF
+Usage:
+  dj start <ProjectName>     # new Django project (venv)
+  dj run [port]             # runserver 0.0.0.0:<port> (default 8000)
+  dj <manage.py command>    # any other manage.py command
+EOF
+    exit 1
+fi
+
+CMD="$1"; shift
+
+# ==========================
+# Helpers
+# ==========================
+ensure_venv() {
+    if [ ! -d ".venv" ]; then
+        echo "No .venv found. Run: dj start <name> or create one manually."
+        exit 1
+    fi
+}
+
+activate_venv() {
+    # shellcheck disable=SC1091
+    . ".venv/bin/activate"
+}
+
+# ==========================
+# Commands
+# ==========================
+case "$CMD" in
+
+# ─── Start new project ─────────────────────────────
+start)
+    if [ -z "$1" ]; then
+        echo "Error: supply a project name: dj start <ProjectName>"
+        exit 2
+    fi
+
+    PROJECT="$1"
+
+    mkdir "$PROJECT"
+    cd "$PROJECT"
+
+    # create venv
+    python -m venv .venv
+    activate_venv
+
+    # install django
+    pip install django
+
+    django-admin startproject config .
+
+    # gitignore
+    cat > .gitignore <<EOF
+# Virtual env
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# SQLite
+db.sqlite3
+
+# OS / editor
+.DS_Store
+*.swp
+EOF
+
+    git init
+
+    echo "Project '$PROJECT' created"
+    echo "Next steps:"
+    echo "  cd $PROJECT"
+    echo "  source .venv/bin/activate"
+    echo "  dj run"
+    ;;
+
+# ─── Run server ─────────────────────────────
+run|runserver)
+    ensure_venv
+    activate_venv
+
+    PORT="${1:-8000}"
+    echo "Starting Django dev server on 0.0.0.0:$PORT"
+
+    python manage.py runserver "0.0.0.0:$PORT"
+    ;;
+
+# ─── Other manage.py commands ───────────────
+*)
+    ensure_venv
+    activate_venv
+
+    python manage.py "$CMD" "$@"
+    ;;
+
+esac

@@ -1,185 +1,206 @@
 # Dotfiles
 
-My personal dotfiles and app configurations. These are focused on portability and
-minimalism for terminal-based development.
+Slliks4 Personal system configuration and dotfiles.
 
-This repository also serves as a **step-by-step system build flow** — from a
-fresh Arch ISO to a complete workstation (X11 + dwm + development tooling).
+This repository is structured as a modular system build, starting from a
+minimal Arch installation and progressing into a configurable environment.
 
-> The top-level README stays lightweight and chronological.  
-> Each major component has its own dedicated README for details.
-
----
-
-## 📌 Setup Flow
-
-### ✅ Step 0 — Install Arch (Base System)
-**Goal:** a working, bootable system with networking and a clean base install.
-
-Includes (high-level):
-- disk partitioning + formatting
-- mounting + pacstrap
-- fstab
-- chroot + base configuration (locale, timezone, users)
-- first successful boot
-
-📄 Detailed guide:  
-- [arch/README.md](arch/README.md)
+The focus is on:
+- minimalism
+- portability
+- explicit configuration
+- reproducibility through documentation
 
 ---
 
-### ✅ Step 1 — Base Tools (CLI Workflow)
-**Goal:** install the minimum tools needed to work comfortably and document changes.
+## Status
+
+Work in progress.
+
+Some modules are incomplete or being refactored.  
+Each directory is intended to contain its own `README.md`.
+
+---
+
+## Repository Layout
+
+```
+
+arch/        Base system installation
+grub/        Bootloader and dual boot configuration
+shared/      Cross-environment tools and system components
+x11/         Xorg-based environment
+wayland/     Wayland-based environment (WIP)
+
+````
+
+Each component is self-contained and can be installed independently.
+
+---
+
+## Setup Flow
+
+This flow produces a complete **minimal working system**.
+
+At the end of this process, the system is usable from the terminal and
+ready to branch into a display environment (or remain headless).
+
+---
+
+### 0. Base System (Arch)
+
+Goal: obtain a minimal, bootable system.
+
+Includes:
+- partitioning and formatting
+- pacstrap installation
+- fstab generation
+- locale and timezone configuration
+- user setup
+- initial boot
+
+See:
+- `arch/README.md`
+
+---
+
+### 1. Bootloader (GRUB)
+
+Goal: stable and predictable boot process.
+
+Includes:
+- UEFI GRUB installation
+- os-prober configuration
+- Windows detection (if present)
+- firmware-specific workarounds
+- optional theme setup
+
+See:
+- `grub/README.md`
+
+---
+
+### 2. Core CLI Environment
+
+Goal: establish a usable terminal workflow.
 
 ```bash
 sudo pacman -Syu
-sudo pacman -S git tmux neovim
+sudo pacman -S zsh git tmux neovim
 ````
 
-Notes:
+See:
 
-* `tmux` is used for a multi-pane workflow during setup
-* `git` is used to pull dotfiles and track changes
-* `neovim` is used for editing configs and documentation
-
-📄 Related:
-
-* [dev/tmux/README.md](dev/tmux/README.md)
-* [dev/nvim/README.md](dev/nvim/README.md)
-* [dev/git/README.md](dev/git/README.md)
+* `shared/dev/zsh/README.md`
+* `shared/dev/git/README.md`
+* `shared/dev/tmux/README.md`
+* `shared/dev/nvim/README.md`
 
 ---
 
-### ✅ Step 2 — Bootloader + Dual Boot (GRUB)
+### 3. System Foundation
 
-**Goal:** a stable GRUB setup with Windows dual boot and sane defaults.
+Goal: stable base system independent of display protocol.
+
+This layer is shared across all environments (X11, Wayland, or headless).
 
 Includes:
 
-* clean GRUB reinstall (UEFI)
-* enabling `os-prober`
-* mounting a separate Windows EFI partition (if applicable)
-* optional HP firmware override workaround
-* GRUB theme installation via `.dotfiles/grub/install.sh`
-* fixing default kernel selection
-
-📄 Detailed guide:
-
-* [grub/README.md](grub/README.md)
-
----
-
-### ✅ Step 3 — X11 Base Setup (with dwm)
-
-**Goal:** reach a usable graphical session with a minimal window manager.
-
-Includes:
-
-* installing the minimal Xorg stack
-* building and installing base dwm (no patches)
-* configuring `.xinitrc`
-* terminal access and fonts
-* first successful `startx`
-
-📄 Detailed guide:
-
-* [x11/README.md](x11/README.md)
-
----
-
-### 🚧 Step 4 — System Utilities
-
-**Goal:** improve daily laptop usability while keeping the system minimal and stable.
-
-Examples:
-
-* screen brightness
+* GPU drivers
+* fonts
 * audio (PipeWire)
-* GPU strategy (Intel-first, AMD optional, NVIDIA discouraged)
-* Monitor and wallpaper settings
-* other desktop-adjacent tools
+* core system configuration
 
-This step is intentionally modular — nothing here is required for X11 or dwm to function.
-Each utility can be adopted independently.
+See:
 
-📄 Detailed guide:
-
-* [system/README.md](system/README.md)
+* `shared/system/README.md`
+* `shared/system/gpu/README.md`
+* `shared/system/fonts/README.md`
+* `shared/system/audio/README.md`
 
 ---
 
-### 🚧 Step 5 — dwm Customization
+## Next Steps
 
-**Goal:** evolve dwm beyond the base setup.
+At this point, the system is complete as a minimal environment.
 
-Planned:
-
-* patch management strategy
-* keybindings, layouts, rules
-* visuals
-* autostart workflow
-
-* [https://github.com/slliks4/dwm](https://github.com/slliks4/dwm)
+You may choose to stop here or continue into a display layer.
 
 ---
 
-### ⏭ Step 6 — Applications & Tooling
+### X11 Path
 
-This stage covers **user-facing applications** and **development tooling**.
-Both are layered *after* the base system and window manager are stable.
+See:
 
----
+* `x11/README.md`
 
-### 🧰 Auxiliary Applications
+This path will include:
 
-**Goal:** everyday usability and communication.
-
-Includes:
-- chat and communication apps (e.g. Discord)
-- proprietary or self-updating binaries
-- general-purpose user applications
-
-These tools are kept separate from system configuration
-and may be installed outside the system package manager when appropriate.
-
-📄 Details:
-- [aux/README.md](aux/README.md)
+* display server setup
+* window manager
+* system utilities
+* applications
 
 ---
 
-### 💻 Development Environment
+### Wayland Path
 
-**Goal:** programming-ready workstation.
+See:
 
-Includes:
-- compilers and build tools
-- language toolchains (Node, Python, Go, etc.)
-- editor and terminal tooling
-- container workflows (Docker, etc.)
-- SSH keys, GPG, and secrets management
+* `wayland/README.md`
 
-Development tooling is isolated so it can evolve
-without impacting system stability or daily applications.
+This path will include:
 
-📄 Details:
-- [dev/README.md](dev/README.md)
+* compositor setup
+* modern replacements for X11 tools
+* system utilities
+* applications
 
 ---
 
-### Browser Scrolling Note
+## Installation Model
 
-Smooth scrolling can cause text "wobble" or bouncing on X11,
-especially in tiling window managers.
+There is no global install script.
 
-Recommended:
-- Disable smooth scrolling in the browser for crisp text rendering.
+Each module provides its own installation entry point.
+
+Example:
+
+```bash
+cd shared/dev/git
+./install.sh
+```
+
+This approach ensures:
+
+* full control over each component
+* transparent configuration
+* easier debugging and modification
 
 ---
 
-## ✅ Philosophy
+## Design Principles
 
-* terminal-first
-* minimal but practical
-* reproducible steps (documentation > magic)
-* each module is installable independently
-* keep “how it works” and “why it works” close to the relevant configuration
+* terminal-first workflow
+* minimal and explicit configuration
+* modular structure
+* no hidden automation
+* reproducible setup
+* understanding over abstraction
+
+---
+
+## Notes
+
+* Some modules are incomplete or being standardized
+* Wayland support is not finalized
+* Structure may evolve as modules stabilize
+
+---
+
+## Future Work
+
+* unify install script conventions
+* dependency validation per module
+* expand Wayland support
+* standardize module documentation

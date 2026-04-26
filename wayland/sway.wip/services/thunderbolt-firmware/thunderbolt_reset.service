@@ -1,0 +1,14 @@
+[Unit]
+Description=Reset Thunderbolt controller before shutdown
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecStop=/usr/local/bin/reset_thunderbolt.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=shutdown.target
+
