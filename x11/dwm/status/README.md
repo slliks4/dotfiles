@@ -1,85 +1,72 @@
 # Status Bar (dwm)
 
-This module provides a **minimal, WM-agnostic status bar** for `dwm` using
-`xsetroot`.
+This module provides a **minimal status bar for dwm** using `xsetroot`.
 
 It is intentionally:
 
-* simple
-* low-noise
-* dependency-light
-* easy to extend later
+- simple
+- low-noise
+- dependency-light
+- easy to extend
 
-The status bar is updated by a small shell script running in the background.
+The status bar is implemented as a small shell script running in the background.
 
 ---
 
-## What It Shows (Current)
+## What It Shows
 
 Right-aligned status information:
 
-* **Network**
+- **Network**
+  - `ETH` when wired
+  - `WIFI` when connected
+  - `OFF` when disconnected
 
-  * `ETH` when wired
-  * `WIFI` when connected via wireless
-  * `OFF` when disconnected
+- **CPU usage**
+  - smoothed average (stable, not jumpy)
 
-* **CPU usage**
+- **Memory usage**
+  - used / total RAM
 
-  * Smoothed average usage (not jumpy)
+- **Battery**
+  - percentage + charging state (if available)
 
-* **Memory usage**
+- **Date & time**
 
-  * Used / total RAM
+- **Volume**
 
-* **Battery status**
-
-  * Percentage + charging/discharging state (if present)
-
-* **Date & time**
-
-* **Volume**
-
-* **Brightness**
+- **Brightness**
 
 The values are designed to be:
 
-* readable at a glance
-* stable (no rapid flickering)
-* useful outside of tmux (reading, meetings, browsing)
+- readable at a glance
+- stable (no flickering)
+- useful outside tmux
 
 ---
 
 ## Script Location
 
-Source script in dotfiles:
+Source (dotfiles):
 
 ```text
 system/status/status.sh
-```
+````
 
-Installed via symlink to:
+Installed to:
 
 ```text
 ~/.config/system/status/status.sh
 ```
 
-This keeps system scripts:
-
-* version-controlled
-* reusable
-* independent of dwm source code
-
 ---
 
 ## How It Works
 
-* Runs in an infinite loop
-* Updates the X root window using `xsetroot`
-* Refresh interval is intentionally conservative
-* CPU and memory values are averaged (not per-second spikes)
-
-This avoids noisy or distracting updates.
+* runs in a loop
+* updates the X root window using `xsetroot`
+* refresh interval is conservative
+* values are smoothed where necessary
 
 ---
 
@@ -91,56 +78,71 @@ Required:
 sudo pacman -S xorg-xsetroot
 ```
 
-Optional but commonly present:
+Common tools used:
 
 * `iproute2`
 * `procps`
 * `coreutils`
-* `acpi` (for battery)
-
-The script performs basic dependency checks.
+* `acpi` (optional, for battery)
 
 ---
 
-## Startup Integration
+## Startup Model
 
-The status script is launched from `~/.xinitrc` **before** `dwm` starts:
+The script is launched through the shared X11 system:
 
-```sh
-# Status bar
-"$HOME/.config/system/status/status.sh" &
+```text
+~/.config/x11/conf.d/status.sh
 ```
 
-Running it in the background is required — the script never exits.
+The hook ensures it only runs under dwm:
+
+```sh
+[ "$WM" = "dwm" ] || exit 0
+```
+
+The main script is then started in the background.
+
+---
+
+## Integration with X11
+
+Startup flow:
+
+```text
+~/.xinitrc
+  → loads ~/.config/x11/conf.d/*
+  → exports WM=dwm or WM=i3
+  → exec dwm / exec i3
+```
+
+This means:
+
+* shared setup runs for all window managers
+* dwm-specific behavior is conditionally enabled
 
 ---
 
 ## Design Notes
 
-* No dwm patches required
-* No external bar (polybar, xmobar, etc.)
-* No compositor assumptions
-* No GPU dependencies
+* no dwm patches required
+* no external bar (polybar, etc.)
+* no compositor dependency
+* no GPU requirements
 
-This keeps the bar:
+The bar is:
 
 * portable
 * predictable
-* trivial to debug
+* easy to debug
 
 ---
 
-## Future Extensions (Optional)
+## Notes
 
-This module can later be extended with:
-
-* color accents per state
-* icons (ASCII or Nerd Font)
-* disk usage
-* temperature
-* notifications hook
-
-None of these are required for daily use.
+* only active when running dwm
+* does not interfere with i3 or other window managers
+* safe to run alongside shared `conf.d` scripts
 
 ---
 
@@ -148,8 +150,8 @@ None of these are required for daily use.
 
 The status bar should:
 
-* fade into the background
-* tell you what matters
-* never demand attention
+* stay out of the way
+* show only useful information
+* remain stable and predictable
 
-This implementation does exactly that.
+This implementation follows that approach.

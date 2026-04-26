@@ -38,6 +38,12 @@ fi
 cp "$CONFIG_SOURCE" "$TARGET_CONFIG"
 echo "Installed fresh i3 config"
 
+if [ -f "$XINITRC" ]; then
+    TS=$(date +"%Y%m%d-%H%M%S")
+    cp "$XINITRC" "$XINITRC.bak-$TS"
+    echo "Backed up existing .xinitrc"
+fi
+
 cat > "$XINITRC" << 'EOF'
 #!/usr/bin/env sh
 
@@ -47,6 +53,7 @@ for file in "$CONF_DIR/"*.sh; do
     [ -x "$file" ] && "$file"
 done
 
+export WM=i3
 exec i3
 EOF
 

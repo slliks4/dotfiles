@@ -1,58 +1,44 @@
 #!/usr/bin/env sh
 set -e
 
-# --------------------------
+# ==========================
 # Paths
-# --------------------------
-
-# Absolute path to this script's directory
+# ==========================
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Module paths
-DOTFILES_DIR="$SCRIPT_DIR"
 CONFIG_DIR="$HOME/.config/system/status"
 SCRIPT_NAME="status.sh"
 
 TARGET_SCRIPT="$CONFIG_DIR/$SCRIPT_NAME"
-XINITRC="$HOME/.xinitrc"
 
-# --------------------------
-# Create config directory
-# --------------------------
+X11_CONF_DIR="$HOME/.config/x11/conf.d"
+HOOK="$X11_CONF_DIR/status.sh"
+
+# ==========================
+# Setup
+# ==========================
 mkdir -p "$CONFIG_DIR"
+mkdir -p "$X11_CONF_DIR"
 
-# --------------------------
-# Symlink status script
-# --------------------------
-ln -sf "$DOTFILES_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
+# ==========================
+# Symlink main script
+# ==========================
+ln -sf "$SCRIPT_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
 chmod +x "$TARGET_SCRIPT"
 
-# --------------------------
-# Ensure .xinitrc exists
-# --------------------------
-if [ ! -f "$XINITRC" ]; then
-    touch "$XINITRC"
-    chmod +x "$XINITRC"
-fi
+# ==========================
+# Create conf.d hook
+# ==========================
+cat > "$HOOK" << EOF
+#!/usr/bin/env sh
 
-# --------------------------
-# Remove old entries (idempotent)
-# --------------------------
-sed -i '/status\.sh/d' "$XINITRC"
-sed -i '/# Status bar/d' "$XINITRC"
+# Only run in dwm
+[ "\$WM" = "dwm" ] || exit 0
 
-# --------------------------
-# Insert before exec dwm
-# --------------------------
-if grep -q "^exec dwm" "$XINITRC"; then
-    sed -i "/^exec dwm/i\\
-# Status bar\n\"$TARGET_SCRIPT\" &\n" "$XINITRC"
-else
-    {
-        echo ""
-        echo "# Status bar"
-        echo "\"$TARGET_SCRIPT\" &"
-    } >> "$XINITRC"
-fi
+"$TARGET_SCRIPT" &
+EOF
 
-echo "Status bar installed."
+chmod +x "$HOOK"
+
+echo "status bar installed -> $TARGET_SCRIPT"
+echo "conf.d hook installed -> $HOOK"

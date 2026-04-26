@@ -8,8 +8,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 BIN_DIR="$HOME/.local/bin"
-SCRIPT_NAME="lock-suspend.sh"
-TARGET_SCRIPT="$BIN_DIR/lock"
+SCRIPT_NAME="slock.sh"
+TARGET_SCRIPT="$BIN_DIR/slock"
 
 # --------------------------
 # Dependency check
@@ -42,4 +42,4 @@ ln -sf "$SCRIPT_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
 # --------------------------
 
 echo "Lock script installed:"
-echo "→ $TARGET_SCRIPT"
+echo "$TARGET_SCRIPT"
