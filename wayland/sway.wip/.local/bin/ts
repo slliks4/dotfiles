@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Check if tmux is installed
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "tmux is not installed. Please install tmux to use this script."
+  exit 1
+fi
+
+# Get only unattached sessions
+sessions=$(tmux list-sessions 2>/dev/null | awk '!/attached/ {print $1}' | cut -d: -f1)
+
+if [ -z "$sessions" ]; then
+  echo "No unattached tmux sessions found."
+  exit 0
+fi
+
+# Prompt user to select a session
+if command -v fzf >/dev/null 2>&1; then
+  selected=$(echo "$sessions" | sort | fzf --prompt="Select an unattached session: ")
+else
+  echo "fzf not found. Please choose from the list below:"
+  echo "$sessions"
+  echo -n "Enter session name to switch to: "
+  read -r selected
+fi
+
+# No session selected
+[ -z "$selected" ] && echo "No session selected." && exit 1
+
+# Check if session is already attached
+if tmux list-sessions | grep -q "^$selected:.*attached"; then
+  echo "Session '$selected' is already attached elsewhere. Aborting to avoid force attach."
+  exit 1
+fi
+
+# Perform switch or attach
+if [ -n "$TMUX" ]; then
+  tmux switch-client -t "$selected"
+else
+  tmux attach-session -t "$selected"
+fi
+
+tmux display-message "Switched to session: $selected"

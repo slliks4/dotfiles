@@ -1,0 +1,17 @@
+@define-color base      #120c07;   /* deep brown-black */
+@define-color mantle   #1a120b;
+@define-color crust    #0c0805;
+
+@define-color text     #f2d3a0;   /* parchment */
+@define-color muted    #c4a46a;
+
+@define-color surface0 #2a1b10;
+@define-color surface1 #3a2414;
+
+@define-color overlay0 #5c3a1e;
+
+@define-color amber    #d08a2d;
+@define-color gold     #e0b35a;
+@define-color orange   #c46b28;
+@define-color red      #a03a2a;
+@define-color green    #6f8a4a;

@@ -1,0 +1,124 @@
+@import "colors.css";
+
+/* =========================
+   Base
+   ========================= */
+* {
+    font-family: "Terminus";
+    font-size: 14px;
+    color: @text;
+    padding: 0;
+    margin: 0;
+}
+
+window#waybar {
+    background-color: @base;
+    border-top: 1px solid @overlay0;
+}
+
+/* =========================
+   Workspaces (clarity-first)
+   ========================= */
+
+#workspaces {
+    background-color: @surface0;
+    margin: 6px;
+    padding: 0 8px;
+}
+
+#workspaces button {
+    padding: 4px 6px 2px 6px;
+    /* top right bottom left */
+    color: @muted;
+    background: transparent;
+}
+
+#workspaces button.focused {
+    color: #ffffff;
+    background-color: @overlay0;
+    font-weight: bold;
+}
+
+#workspaces button.focused {
+    color: #ffffff;
+    /* pure white for instant recognition */
+    background-color: @overlay0;
+    /* subtle contrast block */
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    color: @red;
+}
+
+/* =========================
+   Generic module block
+   ========================= */
+#clock,
+#cpu,
+#memory,
+#disk,
+#battery,
+#network,
+#pulseaudio,
+#backlight,
+#window {
+    background-color: @surface0;
+    margin: 6px 4px;
+    padding: 2px 8px;
+}
+
+/* =========================
+   Center modules emphasis
+   ========================= */
+#cpu,
+#memory,
+#disk {
+    color: @gold;
+}
+
+
+/* =========================
+   MODE
+   ========================= */
+#mode {
+    background-color: #9c6b1c;
+    color: #f2e7cc;
+    padding: 2px 10px;
+    margin: 6px;
+    font-weight: bold;
+}
+
+/* =========================
+   Battery states
+   ========================= */
+#battery {
+    color: @green;
+}
+
+#battery.warning {
+    color: @amber;
+}
+
+#battery.critical {
+    color: @red;
+}
+
+/* =========================
+   Network / Audio
+   ========================= */
+#network {
+    color: @gold;
+}
+
+#pulseaudio.muted {
+    color: @muted;
+}
+
+/* =========================
+   Clock (anchor piece)
+   ========================= */
+#clock {
+    color: @amber;
+    font-weight: bold;
+}

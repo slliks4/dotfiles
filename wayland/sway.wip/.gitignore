@@ -1,0 +1,26 @@
+# Vim/Neovim swap/undo/backup files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.un~
+*.log
+
+# macOS metadata (if you ever use a Mac)
+.DS_Store
+
+# compiled bytecode
+__pycache__/
+*.pyc
+
+# Ignore your local environment overrides
+.env
+.env.local
+.secret
+.secrets/
+*.git/
+
+# Ignore plugin directories
+.config/nvim/pack/nvim/start/*
+.config/tmux/plugins/*
+

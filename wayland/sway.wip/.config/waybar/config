@@ -1,0 +1,45 @@
+{
+  "layer": "top", // Waybar at top layer
+  "position": "bottom", // Waybar position (top|bottom|left|right)
+  "height": 30,
+  "margin": "0 0 0 0",
+  //"width": 1350, // Waybar width
+  // Choose the order of the modules idle_inhibitor
+  
+  // Left Position
+  "modules-left": [
+    "sway/workspaces", // sway default workspace display
+    "sway/mode", // Sway default mode 
+    // "tray", // Shows background app (Discord)
+    // "mpd#2", // For media Player (Previous Button)
+    // "mpd#3", // For media Player (Pause and play Button)
+    // "mpd#4", // For media Player (Pause and play Button)
+    // "mpd", // For media Player (Forward Button)
+    "sway/window" // Sway default current window name
+  ],
+
+  // Center position
+  "modules-center": [
+  	// "temperature", // System temperature
+    // "custom/gpu_temp", // Custom Nvidia Driver temp
+  	"cpu", // System Cpu
+	"memory", // System Memory
+	"disk", // System Disk
+	"battery" // System Battery
+  ],
+  "modules-right": [
+	"backlight", // System brightness control
+  	"pulseaudio", // System sound control
+    "network", // System network
+	"clock" // System clock
+ 	// "idle_inhibitor", // System idle_inibitor
+  	// "custom/power" // Custom Power script
+  ],
+
+
+    // Load Modules
+    "include": ["~/.config/waybar/modules.json"],
+
+  // Modules configuration
+
+}
