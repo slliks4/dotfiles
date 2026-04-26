@@ -1,0 +1,25 @@
+window {
+    background-color: #2e2e2e; /* Dark grey background */
+    color: #ffffff;            /* White text */
+    padding: 12px;             /* Padding around the window */
+    border-radius: 8px;        /* Rounded corners for window */
+}
+
+#entry {
+    background-color: #3a3a3a; /* Slightly lighter grey for entries */
+    color: #ffffff;
+    padding: 8px;              /* Padding inside each entry */
+}
+
+#entry:selected {
+    background-color: #555555; /* Lighter grey on selection */
+    color: #ffffff;
+}
+
+#input {
+    background-color: #3a3a3a; /* Match entry background */
+    color: #ffffff;
+    border: 1px solid #555555; /* Subtle border */
+    padding: 6px;              /* Padding inside the input box */
+    border-radius: 4px;        /* Rounded corners for input */
+}

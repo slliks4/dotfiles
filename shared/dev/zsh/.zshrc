@@ -1,0 +1,104 @@
+# -------------------------
+# Dotfiles root
+# -------------------------
+export DOTFILES="$HOME/.dotfiles"
+
+# ENV
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+# -------------------------
+# Oh My Zsh (NO THEME)
+# -------------------------
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME=""
+export ZSH_CUSTOM="${ZSH_CUSTOM:-$ZSH/custom}"
+
+# -------------------------
+# Plugins
+# -------------------------
+plugins=(git fast-syntax-highlighting)
+source $ZSH/oh-my-zsh.sh
+
+# -------------------------
+# Clean LS_COLORS (no background highlights)
+# -------------------------
+LS_COLORS="di=38;5;71:ln=36:so=35:pi=33:ex=32:bd=33:cd=33:su=31:sg=33:tw=30:ow=34"
+export LS_COLORS
+
+# -------------------------
+# Vim Mode
+# -------------------------
+bindkey -v
+KEYTIMEOUT=1
+
+bindkey -M viins 'jj' vi-cmd-mode
+bindkey '^k' up-line-or-search
+bindkey '^j' down-line-or-search
+
+# -------------------------
+# Enable dynamic prompt
+# -------------------------
+setopt PROMPT_SUBST
+
+# -------------------------
+# Mode state (visible badge)
+# -------------------------
+CURRENT_MODE="%K{238}%F{71}  INSERT  %f%k"
+
+# -------------------------
+# Cursor + Mode switching
+# -------------------------
+function zle-keymap-select {
+    if [[ $KEYMAP == vicmd ]]; then
+        CURRENT_MODE="%K{238}%F{167}  NORMAL  %f%k"
+        echo -ne '\e[1 q'   # block cursor
+    else
+        CURRENT_MODE="%K{238}%F{71}  INSERT  %f%k"
+        echo -ne '\e[5 q'   # beam cursor
+    fi
+    zle reset-prompt
+}
+zle -N zle-keymap-select
+
+function zle-line-init {
+    zle-keymap-select
+}
+zle -N zle-line-init
+
+# -------------------------
+# Colors
+# -------------------------
+autoload -U colors && colors
+
+# -------------------------
+# Git prompt tuning
+# -------------------------
+ZSH_THEME_GIT_PROMPT_PREFIX="("
+ZSH_THEME_GIT_PROMPT_SUFFIX=")"
+ZSH_THEME_GIT_PROMPT_BRANCH="%F{180}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{167}!"
+ZSH_THEME_GIT_PROMPT_CLEAN="%F{71}="
+
+# -------------------------
+# Prompt
+# -------------------------
+PROMPT='${CURRENT_MODE} %F{71}%~ %F{180}$(git_prompt_info)%f '
+PROMPT2='%F{178}> %f'
+
+# -------------------------
+# Load modular configs
+# -------------------------
+setopt null_glob
+
+for file in "$HOME/.config/zsh/conf.d/"*.zsh; do
+    source "$file"
+done
+
+# Safe to clear and modify
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

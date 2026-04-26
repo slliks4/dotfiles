@@ -1,0 +1,304 @@
+#
+# ===============================
+#           VARIABLES
+# ===============================
+#
+# Modifier key
+set $mod Mod4
+
+for_window [app_id="scratch-terminal"] opacity 0.89
+for_window [app_id="main-terminal"] opacity 0.89
+set $term foot
+set $menu rofi -show drun -theme "$HOME/.config/rofi/config.rasi"
+# set $menu wofi -show drun --style ~/.config/wofi/style.css
+# Notfication with mako
+set $notification mako
+# Night light Settings (wlsunset)
+set $night_light_toggle "~/.config/scripts/sys/night_light.sh"
+
+
+# Direction keys (Vim-style)
+set $left h
+set $down j
+set $up   k
+set $right l
+
+#
+# ===============================
+#         SCRIPT IMPORTS
+# ===============================
+#
+# System Scripts
+set $lock_screen "$HOME/.config/scripts/sys/lock_and_idle.sh"
+# set $auto_lock_screen "$HOME/.config/scripts/sys/auto_lock_screen.sh"
+set $logout "$HOME/.config/scripts/sys/logout.sh"
+set $resize_firefox "$HOME/.config/scripts/sys/resize_firefox.sh"
+set $screenshot ~/.config/scripts/sys/screenshot.sh select
+set $http-screenshot ~/.config/scripts/sys/http-screenshot.sh select
+set $screenrecord ~/.config/scripts/sys/screen_record.sh
+
+#
+# ===============================
+#        OUTPUT CONFIGURATION
+# ===============================
+#
+# Portrait monitor (Left)
+output "AOP 22CV1Q A1PAA0013W01" {
+    mode 1920x1080@74.986Hz
+    pos 0 0
+    transform 270
+    # bg ~/Pictures/bg/portrait_bg.jpg fill
+    bg ~/Pictures/bg/lastsupper.jpg fill
+}
+
+# Center monitor (DP-1)
+output "HKC OVERSEAS LIMITED GN06 0000000000001" {
+    mode 1920x1080@164.999Hz
+    pos 1080 0
+    # bg ~/Pictures/bg/main_bg.jpg fill
+    bg ~/Pictures/bg/lastsupper.jpg fill
+}
+
+
+# ─────────────────────────────────────────
+# External 4K School monitor
+# output HDMI-A-1 {
+#     mode 3840x2160@60Hz
+#     scale 1.5
+#     pos 0 0
+# }
+
+# ─────────────────────────────────────────
+# Laptop monitor (Right)
+output eDP-1 {
+    mode 1366x768@60.059Hz
+    pos 3000 0
+    # bg ~/Pictures/bg/laptop_bg.jpg fill
+    bg ~/Pictures/bg/lastsupper.jpg fill
+}
+
+
+# Workspace assignment
+workspace 8 output "AOP 22CV1Q A1PAA0013W01"
+workspace 1 output "HKC OVERSEAS LIMITED GN06 0000000000001"
+workspace 9 output "AU Optronics 0x5191 Unknown"
+
+#
+# ===============================
+#         WORKSPACES
+# ===============================
+#
+bindsym $mod+0 workspace number 1
+bindsym $mod+9 workspace number 2
+bindsym $mod+8 workspace number 3
+bindsym $mod+7 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+1 workspace number 8
+bindsym $mod+2 workspace number 9
+
+bindsym $mod+Shift+0 move container to workspace number 1
+bindsym $mod+Shift+9 move container to workspace number 2
+bindsym $mod+Shift+8 move container to workspace number 3
+bindsym $mod+Shift+7 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+1 move container to workspace number 8
+bindsym $mod+Shift+2 move container to workspace number 9
+
+#
+# ===============================
+#        AUTO ARRANGE APPS
+# ===============================
+#
+for_window [app_id="media-firefox"] move to workspace 8
+for_window [class="discord"] move to workspace 8
+for_window [class="Spotify"] move to workspace 8
+for_window [app_id="main-terminal"] move to workspace 1
+for_window [app_id="org.qutebrowser.qutebrowser"] move to workspace 3
+
+#
+# ===============================
+#        AUTOSTART SCRIPTS
+# ===============================
+#
+exec $notification
+# exec $auto_lock_screen
+#
+# ===============================
+#       KEYBINDINGS - BASICS/APPS
+# ===============================
+#
+bindsym $mod+Return exec $term
+bindsym $mod+space exec $menu
+bindsym $mod+Shift+c reload
+bindsym $mod+Backspace kill
+bindsym $mod+Shift+Backspace exec swaymsg exit
+bindsym $mod+Escape exec $lock_screen
+
+# Toggle screen recording with or without mic
+bindsym $mod+p exec $screenshot
+bindsym $mod+Shift+p exec $http-screenshot
+bindsym $mod+o exec $screenrecord toggle
+bindsym $mod+Shift+o exec $screenrecord toggle-mic
+
+# Toggle Night Light
+bindsym $mod+F12 exec $night_light_toggle
+
+# Idle Inhibitor Toggle 
+bindsym $mod+F10 exec bash -c 'swaymsg -t get_seats | grep -q "\"idle_inhibit\": true" && (swaymsg idle_inhibit disable && notify-send "Idle Inhibitor: OFF") || (swaymsg idle_inhibit enable && notify-send "Idle Inhibitor: ON")'
+
+# Media-fireforx
+bindsym $mod+comma [app_id="media-firefox"] focus
+
+# Discord
+bindsym $mod+period [class="discord"] focus
+
+# Volume Contorl
+bindsym $mod+slash [app_id="org.pulseaudio.pavucontrol"] focus
+
+# Fdev developer tool
+bindsym $mod+Shift+u [app_id="fdev" title="Developer Tools.*"] focus
+
+
+# Main Terminal
+bindsym $mod+i [app_id="main-terminal"] focus
+
+# Fdev only
+bindsym $mod+u [app_id="fdev" title="^(?!Developer Tools).*"] focus
+
+bindsym $mod+semicolon [app_id="org.qutebrowser.qutebrowser"] focus
+bindsym $mod+apostrophe [app_id="librewolf"] focus
+
+bindsym $mod+bracketleft [app_id="scratch-terminal"] focus
+bindsym $mod+bracketright [app_id="org.kde.kdeconnect.app"] focus
+# bindsym $mod+backslash [app_id="org.kde.kdeconnect.app"] focus
+
+# bindsym $mod+backslash [app_id="thunderbird"] focus
+# bindsym $mod+bracketleft [class="Spotify"] focus
+
+#
+# ===============================
+#         MOVING AROUND
+# ===============================
+#
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# ===============================
+#        CLIENT ACTIVE CONFIG
+# ===============================
+
+font pango:Terminus 12
+
+client.focused          #cc8a3a #1a120c #f2e7cc #cc8a3a #cc8a3a
+client.unfocused        #3a2a1a #1a120c #888888 #1a120c #1a120c
+client.urgent           #b84a3a #1a120c #ffffff #b84a3a #b84a3a
+client.placeholder      #000000 #000000 #000000 #000000 #000000
+
+# ===============================
+#         GAPS AND BORDERS
+# ===============================
+
+gaps inner 0
+gaps outer 0
+default_border pixel 1
+default_floating_border pixel 1
+#
+#
+# ===============================
+#         WINDOW LAYOUT
+# ===============================
+#
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+e layout toggle split
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+
+bindsym $mod+f fullscreen
+# bindsym $mod+Shift+p floating toggle
+bindsym $mod+t focus mode_toggle
+bindsym $mod+a focus parent
+
+#
+# ===============================
+#          SCRATCHPAD
+# ===============================
+#
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+#
+# ===============================
+#           RESIZE MODE
+# ===============================
+#
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+bindsym $mod+y exec $resize_firefox
+
+#
+# ===============================
+#            INPUT
+# ===============================
+#
+input "type:touchpad" {
+    dwt enabled
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
+}
+input "type:keyboard" {
+    xkb_options "caps:escape_shifted_capslock"
+}
+input "type:pointer" accel_profile flat
+
+#
+# ===============================
+#        SPECIAL KEYS
+# ===============================
+#
+bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+bindsym Print exec grim
+
+#
+# ===============================
+#            STATUS BAR
+# ===============================
+#
+bar {
+    swaybar_command waybar
+}
+
+#
+# ===============================
+#         SYSTEM INCLUDES
+# ===============================
+#
+include /etc/sway/config.d/*
+

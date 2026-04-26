@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Main Terminal
+Exec=/home/voldemort/.config/scripts/apps/main-terminal.sh
+Icon=utilities-terminal
+Type=Application
+Categories=Terminal;

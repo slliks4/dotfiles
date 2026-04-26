@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Scratch Terminal
+Exec=/home/voldemort/.config/scripts/apps/scratch-terminal.sh
+Icon=utilities-terminal
+Type=Application
+Categories=Terminal;

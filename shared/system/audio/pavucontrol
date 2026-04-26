@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Force dark GTK theme for pavucontrol
+# Fallback-safe: if theme not found, GTK will fallback automatically
+
+GTK_THEME=Adwaita:dark \
+GDK_BACKEND=x11 \
+/usr/bin/pavucontrol "$@"
