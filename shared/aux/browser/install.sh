@@ -14,6 +14,17 @@ EDGE_SCRIPT="$BIN_DIR/edge-media"
 
 AUR_DIR="$HOME/.cache/aur"
 
+ensure_pacman_pkg() {
+    if ! pacman -Qi "$1" >/dev/null 2>&1; then
+        echo "Installing missing dependency: $1"
+        sudo pacman -S --noconfirm "$1"
+    fi
+}
+
+# Required for building AUR packages
+sudo pacman -S --needed --noconfirm base-devel
+ensure_pacman_pkg git
+
 # ==========================
 # Ensure paru exists
 # ==========================
