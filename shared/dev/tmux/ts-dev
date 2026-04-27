@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+set -e
+
+SESSION_NAME="$1"
+
+if [ -z "$SESSION_NAME" ]; then
+    echo "Usage: ts-dev <session-name>"
+    exit 1
+fi
+
+# Check tmux
+command -v tmux >/dev/null || {
+    echo "tmux is not installed."
+    exit 1
+}
+
+INSIDE_TMUX=0
+[ -n "$TMUX" ] && INSIDE_TMUX=1
+
+# -----------------------------
+# Helper: safely zoom main pane
+# -----------------------------
+zoom_main() {
+    tmux select-window -t "$SESSION_NAME:main"
+    tmux select-pane -t "$SESSION_NAME:main.0"
+
+    if [ "$(tmux display-message -p -t "$SESSION_NAME:main" "#{window_zoomed_flag}")" = "0" ]; then
+        tmux resize-pane -Z -t "$SESSION_NAME:main.0"
+    fi
+}
+
+# -----------------------------
+# If session exists
+# -----------------------------
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    zoom_main
+
+    if [ "$INSIDE_TMUX" -eq 1 ]; then
+        tmux switch-client -t "$SESSION_NAME"
+    else
+        tmux attach -t "$SESSION_NAME"
+    fi
+    exit 0
+fi
+
+# -----------------------------
+# Create session -> MAIN window
+# -----------------------------
+tmux new-session -d -s "$SESSION_NAME" -n main
+
+# Split (top/bottom)
+tmux split-window -v -t "$SESSION_NAME:main"
+
+# Run editor in top pane 
+tmux send-keys -t "$SESSION_NAME:main.0" "nvim" C-m
+
+# Zoom top pane
+zoom_main
+
+# -----------------------------
+# TOOLS window
+# -----------------------------
+tmux new-window -t "$SESSION_NAME" -n tools
+
+# Split top/bottom
+tmux split-window -v -t "$SESSION_NAME:tools"
+
+# Bottom ≈ 55%
+tmux resize-pane -t "$SESSION_NAME:tools.1" -y 55%
+
+# Split top into left/right
+tmux select-pane -t "$SESSION_NAME:tools.0"
+tmux split-window -h -t "$SESSION_NAME:tools.0"
+
+# -----------------------------
+# Return to main (zoomed)
+# -----------------------------
+zoom_main
+
+# -----------------------------
+# Attach / Switch
+# -----------------------------
+if [ "$INSIDE_TMUX" -eq 1 ]; then
+    tmux switch-client -t "$SESSION_NAME"
+else
+    tmux attach -t "$SESSION_NAME"
+fi

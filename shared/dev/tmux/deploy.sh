@@ -79,6 +79,8 @@ fi
 LOCAL_BIN="$HOME/.local/bin"
 TS_SOURCE="$SCRIPT_DIR/ts"
 TS_TARGET="$LOCAL_BIN/ts"
+TSDEV_SOURCE="$SCRIPT_DIR/ts-dev"
+TSDEV_TARGET="$LOCAL_BIN/ts-dev"
 
 mkdir -p "$LOCAL_BIN"
 
@@ -88,6 +90,14 @@ if [ -f "$TS_SOURCE" ]; then
   echo "ts linked → $TS_TARGET"
 else
   echo "ts script not found"
+fi
+
+if [ -f "$TSDEV_SOURCE" ]; then
+  chmod +x "$TSDEV_SOURCE"
+  ln -sf "$TSDEV_SOURCE" "$TSDEV_TARGET"
+  echo "ts-dev linked → $TSDEV_TARGET"
+else
+  echo "ts-dev setup script not found"
 fi
 
 echo "Tmux deploy complete"
