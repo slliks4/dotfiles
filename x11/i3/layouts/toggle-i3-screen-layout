@@ -12,10 +12,10 @@ STATE="$(cat "$STATE_FILE")"
 
 if [ "$STATE" = "main" ]; then
     # shrink main → focus aside
-    i3-msg "resize set width 35 ppt"
+    i3-msg "resize set width 30 ppt"
     echo "aside" > "$STATE_FILE"
 else
     # expand main
-    i3-msg "resize set width 65 ppt"
+    i3-msg "resize set width 70 ppt"
     echo "main" > "$STATE_FILE"
 fi

@@ -39,3 +39,5 @@ vim.keymap.set("v", "<S-Tab>", "<gv")
 
 -- Clear search
 vim.keymap.set("n", "<leader>nh", ":nohl<CR>")
+-- Toggle between last and current file
+vim.keymap.set("n", "<leader>b", "<C-^>", { desc = "Previous file", silent = true })

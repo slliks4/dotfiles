@@ -13,29 +13,20 @@ telescope.setup({
             "build",
         },
     },
-
     pickers = {
-        find_files = {
-            theme = "ivy",
-        },
-        live_grep = {
-            theme = "ivy",
-        },
-        buffers = {
-            theme = "ivy",
-        },
-        help_tags = {
-            theme = "ivy",
-        },
-        git_files = {
-            theme = "ivy",
-        },
-        git_status = {
-            theme = "ivy",
-        },
-        git_branches = {
-            theme = "ivy",
-        },
+        lsp_definitions = { theme = "ivy" },
+        lsp_references = { theme = "ivy" },
+        lsp_implementations = { theme = "ivy" },
+        lsp_type_definitions = { theme = "ivy" },
+        lsp_document_symbols = { theme = "ivy" },
+        lsp_workspace_symbols = { theme = "ivy" },
+        find_files = { theme = "ivy"},
+        live_grep = { theme = "ivy"},
+        buffers = { theme = "ivy"},
+        help_tags = { theme = "ivy"},
+        git_files = { theme = "ivy"},
+        git_status = { theme = "ivy"},
+        git_branches = { theme = "ivy"},
     },
 
     extensions = {

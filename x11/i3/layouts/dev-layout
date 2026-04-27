@@ -133,6 +133,6 @@ i3-msg '
 i3-msg '
     [con_mark="main"] focus;
     focus parent;
-    resize set width 65 ppt;
+    resize set width 70 ppt;
     [con_mark="main"] focus
 '
