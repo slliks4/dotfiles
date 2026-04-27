@@ -16,7 +16,7 @@ It is:
 * Locks the screen using `slock`
 * Suspends the system after lock
 * Installs `slock` automatically if missing
-* Creates a `slock` command in `~/.local/bin`
+* Creates a `lock` command in `~/.local/bin`
 
 No systemd user services.
 No logind integration.
@@ -35,9 +35,8 @@ From the module directory:
 This creates:
 
 ```text
-~/.local/bin/slock
+~/.local/bin/lock
 ```
----
 
 ## Philosophy
 

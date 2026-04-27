@@ -20,6 +20,7 @@ wait_for_window() {
 # =========================================================
 
 i3-msg "workspace 1"
+i3-msg '[workspace="1"] move container to workspace 8'
 
 # Ensure apps exist
 if ! has_window '.. | objects | select(.window_properties.class? == "zen")'; then

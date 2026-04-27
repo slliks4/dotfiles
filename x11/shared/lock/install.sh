@@ -8,8 +8,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 BIN_DIR="$HOME/.local/bin"
-SCRIPT_NAME="slock.sh"
-TARGET_SCRIPT="$BIN_DIR/slock"
+SCRIPT_NAME="lock.sh"
+TARGET_SCRIPT="$BIN_DIR/lock"
 
 # --------------------------
 # Dependency check
