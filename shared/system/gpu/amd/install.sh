@@ -10,7 +10,6 @@ ensure_pkg() {
 
 # Core graphics stack
 ensure_pkg mesa
-ensure_pkg lib32-mesa
 
 # AMD drivers (kernel + userspace)
 ensure_pkg xf86-video-amdgpu

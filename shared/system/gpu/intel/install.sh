@@ -10,7 +10,6 @@ ensure_pkg() {
 
 # Core graphics stack
 ensure_pkg mesa
-ensure_pkg lib32-mesa
 
 # Video acceleration
 ensure_pkg libva-intel-driver
