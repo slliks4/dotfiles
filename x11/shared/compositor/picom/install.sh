@@ -40,6 +40,11 @@ ensure_pkg picom
 mkdir -p "$CONFIG_DIR"
 mkdir -p "$CONF_D_DIR"
 
+if [ -L "$FINAL_CONFIG" ]; then
+    echo "Removing stale symlink: $FINAL_CONFIG"
+    rm "$FINAL_CONFIG"
+fi
+
 # ==========================
 # Install base config
 # ==========================
