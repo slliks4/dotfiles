@@ -1,3 +1,4 @@
 # Generated runtime modules
 */conf.d/
 */plugin/
+shared/dev/nvim/plugin
