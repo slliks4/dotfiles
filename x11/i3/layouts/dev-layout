@@ -79,9 +79,9 @@ if ! has_window '.. | objects | select(.window_properties.class? == "Alacritty" 
     wait_for_window '.. | objects | select(.window_properties.class? == "Alacritty" and .name? == "main-terminal")'
 fi
 
-if ! has_window '.. | objects | select(.window_properties.class? == "firefox-developer-edition")'; then
+if ! has_window '.. | objects | select(.window_properties.class? == "firefox-developer-edition" and .window_properties.window_role? == "browser")'; then
     i3-msg 'exec firefox-developer-edition'
-    wait_for_window '.. | objects | select(.window_properties.class? == "firefox-developer-edition")'
+    wait_for_window '.. | objects | select(.window_properties.class? == "firefox-developer-edition" and .window_properties.window_role? == "browser")'
 fi
 
 if ! has_window '.. | objects | select(.window_properties.class? == "qutebrowser")'; then
@@ -91,7 +91,7 @@ fi
 
 # Move everything
 i3-msg '[title="main-terminal"] move to workspace 0'
-i3-msg '[class="firefox-developer-edition"] move to workspace 0'
+i3-msg '[class="firefox-developer-edition" window_role="browser"] move to workspace 0'
 i3-msg '[class="qutebrowser"] move to workspace 0'
 
 i3-msg "workspace 0"
@@ -101,7 +101,7 @@ i3-msg 'layout stacking'
 
 # Mark roles (replace ensures no duplication)
 i3-msg '[title="main-terminal"] mark --replace main'
-i3-msg '[class="firefox-developer-edition"] mark --replace aside'
+i3-msg '[class="firefox-developer-edition" window_role="browser"] mark --replace aside'
 
 # Put qutebrowser into aside container
 i3-msg '[class="qutebrowser"] move container to mark aside'

@@ -205,14 +205,14 @@ bindsym $mod+n exec --no-startup-id toggle-night
 # Layout
 # -------------------------
 bindsym $mod+d exec --no-startup-id dev-layout
-bindsym $mod+t exec --no-startup-id toggle-i3-screen-layout
+bindsym $mod+u exec --no-startup-id toggle-i3-screen-layout
 
 bindsym $mod+m move container to mark main; workspace 0; focus
 
 # Apps
 # Applications (Mod + Alt + number)
 bindsym $mod+Mod1+0 [title="main-terminal"] focus
-bindsym $mod+Mod1+9 [class="firefox-developer-edition"] focus
+bindsym $mod+Mod1+9 [class="firefox-developer-edition" window_role="browser"] focus
 bindsym $mod+Mod1+8 [class="qutebrowser"] focus
 bindsym $mod+Mod1+7 [class="zen"] focus
 bindsym $mod+Mod1+6 [class="pavucontrol"] focus
