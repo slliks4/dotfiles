@@ -54,3 +54,10 @@ WALLPAPER_DIR="$HOME/.config/system/display/wallpaper"
 if command -v feh >/dev/null 2>&1; then
     feh --bg-fill "$WALLPAPER_DIR/default.png"
 fi
+
+# ==========================
+# Disable screen blanking + DPMS (MUST BE LAST)
+# ==========================
+xset s off
+xset -dpms
+xset s noblank
