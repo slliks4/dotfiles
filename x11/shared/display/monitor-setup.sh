@@ -4,6 +4,11 @@ set -e
 
 XRANDR_OUTPUT="$(xrandr)"
 
+# Disable all first
+echo "$XRANDR_OUTPUT" | grep " connected" | cut -d' ' -f1 | while read -r output; do
+    xrandr --output "$output" --off
+done
+
 # ==========================
 # Detect home setup
 # ==========================
@@ -11,11 +16,6 @@ if echo "$XRANDR_OUTPUT" | grep -q "^DP-0 connected" && \
    echo "$XRANDR_OUTPUT" | grep -q "^DP-2 connected"; then
 
     echo "Home setup detected"
-
-    # Disable all first
-    echo "$XRANDR_OUTPUT" | grep " connected" | cut -d' ' -f1 | while read -r output; do
-        xrandr --output "$output" --off
-    done
 
     # Primary
     xrandr --output DP-0 \
