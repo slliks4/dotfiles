@@ -19,3 +19,10 @@ xrandr --output eDP-1 \
 
 WALLPAPER_DIR="$HOME/.config/system/display/wallpaper"
 feh --bg-fill "$WALLPAPER_DIR/default.png"
+
+# ==========================
+# Disable screen blanking + DPMS (MUST BE LAST)
+# ==========================
+xset s off
+xset -dpms
+xset s noblank
