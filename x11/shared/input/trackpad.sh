@@ -9,7 +9,8 @@ set -e
 # - Use clickfinger method
 # - Disable middle-button emulation
 
-TRACKPAD="$(xinput list | grep -i 'touchpad' | awk -F'id=' '{print $2}' | cut -d' ' -f1)"
+TRACKPAD="$(xinput list | grep -i 'Touchpad' \
+  | sed -n 's/.*id=\([0-9]*\).*/\1/p' | head -n1)"
 
 [ -z "$TRACKPAD" ] && exit 0
 
