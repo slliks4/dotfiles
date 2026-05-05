@@ -65,7 +65,7 @@ mv "$INSTALL_ROOT/Discord" "$INSTALL_DIR"
 # ==========================
 mkdir -p "$LOCAL_BIN"
 
-ln -sf "$INSTALL_DIR/Discord" "$BIN_LINK"
+ln -sf "$INSTALL_DIR/discord" "$BIN_LINK"
 ln -sf "$SCRIPT_DIR/deploy.sh" "$DEPLOY_LINK"
 
 echo "Binary linked -> $BIN_LINK"
