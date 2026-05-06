@@ -88,7 +88,7 @@ run|runserver)
     ensure_venv
     activate_venv
 
-    PORT="${1:-8000}"
+    PORT="${1:-8080}"
     echo "Starting Django dev server on 0.0.0.0:$PORT"
 
     python manage.py runserver "0.0.0.0:$PORT"
