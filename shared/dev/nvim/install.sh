@@ -47,6 +47,8 @@ if [ ! -f "$NVIM_ALIAS_FILE" ]; then
     echo "Creating nvim shell config -> $NVIM_ALIAS_FILE"
 
     cat > "$NVIM_ALIAS_FILE" << 'EOF'
+export EDITOR=nvim
+export VISUAL=nvim
 alias vi=nvim
 alias vim=nvim
 EOF
