@@ -83,7 +83,8 @@ if [ -f "$ZSHRC_DEST" ] && [ ! -L "$ZSHRC_DEST" ]; then
 fi
 
 echo "Linking .zshrc"
-ln -sf "$ZSHRC_SRC" "$ZSHRC_DEST"
+rm "$ZSHRC_DEST"
+cp "$ZSHRC_SRC" "$ZSHRC_DEST"
 
 # ==========================
 # Done
