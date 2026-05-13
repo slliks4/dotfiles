@@ -36,14 +36,16 @@ ensure_pkg feh
 mkdir -p "$CONFIG_DIR"
 
 # ==========================
-# Symlink display script
+# copy display script
 # ==========================
-ln -sf "$SCRIPT_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
+rm -f "$TARGET_SCRIPT"
+cp "$SCRIPT_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
 
 # ==========================
-# Symlink wallpaper directory
+# copy wallpaper directory
 # ==========================
-ln -sfn "$SCRIPT_DIR/wallpaper" "$TARGET_WALLPAPER"
+rm -rf "$TARGET_WALLPAPER"
+cp -a "$SCRIPT_DIR/wallpaper" "$TARGET_WALLPAPER"
 
 # ==========================
 # Setup X11 conf.d hook

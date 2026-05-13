@@ -4,10 +4,19 @@ set -e
 
 XRANDR_OUTPUT="$(xrandr)"
 
-# Disable all first
-echo "$XRANDR_OUTPUT" | grep " connected" | cut -d' ' -f1 | while read -r output; do
-    xrandr --output "$output" --off
-done
+disable_all_outputs() {
+    echo "$XRANDR_OUTPUT" |
+        grep " connected" |
+        cut -d' ' -f1 |
+        while read -r output; do
+            xrandr --output "$output" --off
+        done
+}
+
+# ==========================
+# Start clean
+# ==========================
+disable_all_outputs
 
 # ==========================
 # Detect home setup
@@ -30,7 +39,7 @@ if echo "$XRANDR_OUTPUT" | grep -q "^DP-0 connected" && \
         --rotate left \
         --left-of DP-0
 
-    # Optional clone (safe even if missing)
+    # Optional clone
     if echo "$XRANDR_OUTPUT" | grep -q "^HDMI-0 connected"; then
         xrandr --output HDMI-0 \
             --same-as DP-0 \
@@ -40,10 +49,40 @@ if echo "$XRANDR_OUTPUT" | grep -q "^DP-0 connected" && \
 else
     echo "Fallback setup"
 
-    # Generic: enable all connected outputs
-    echo "$XRANDR_OUTPUT" | grep " connected" | cut -d' ' -f1 | while read -r output; do
-        xrandr --output "$output" --auto
-    done
+    # ==========================
+    # Laptop setup
+    # ==========================
+    if echo "$XRANDR_OUTPUT" | grep -q "^eDP-1 connected"; then
+
+        xrandr --output eDP-1 \
+            --auto \
+            --primary
+
+        if echo "$XRANDR_OUTPUT" | grep -q "^HDMI-1 connected"; then
+            xrandr --output HDMI-1 \
+                --auto \
+                --left-of eDP-1
+        fi
+
+        if echo "$XRANDR_OUTPUT" | grep -q "^DP-1 connected"; then
+            xrandr --output DP-1 \
+                --auto \
+                --right-of eDP-1
+        fi
+
+    # ==========================
+    # Generic fallback
+    # ==========================
+    else
+        echo "No eDP-1 detected -> enabling all displays"
+
+        echo "$XRANDR_OUTPUT" |
+            grep " connected" |
+            cut -d' ' -f1 |
+            while read -r output; do
+                xrandr --output "$output" --auto
+            done
+    fi
 fi
 
 # ==========================
