@@ -8,6 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ==========================
 CONFIG_DIR="$HOME/.config/system/display"
 SCRIPT_NAME="monitor-setup.sh"
+LAPTOP_MODE="laptop-mode.sh"
 
 TARGET_SCRIPT="$CONFIG_DIR/$SCRIPT_NAME"
 TARGET_WALLPAPER="$CONFIG_DIR/wallpaper"
@@ -16,6 +17,7 @@ X11_CONF_DIR="$HOME/.config/x11/conf.d"
 DISPLAY_HOOK="$X11_CONF_DIR/display.sh"
 
 BINPATH="$HOME/.local/bin"
+LAPTOP_MODE_BIN="$BINPATH/laptop-screen-only"
 RESYNC="$BINPATH/resync-session"
 
 # ==========================
@@ -93,6 +95,16 @@ cat <<EOF >> "$RESYNC"
 EOF
 
 echo "monitor-setup hook added to resync-session."
+# ==========================
+# Install laptop-only helper
+# ==========================
+rm -f "$LAPTOP_MODE_BIN"
 
+cp "$SCRIPT_DIR/$LAPTOP_MODE" \
+   "$LAPTOP_MODE_BIN"
+
+chmod +x "$LAPTOP_MODE_BIN"
+
+echo "Installed -> $LAPTOP_MODE_BIN"
 echo
 echo "Display configuration installed"
