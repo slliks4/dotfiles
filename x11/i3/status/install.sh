@@ -34,8 +34,12 @@ if [ -L "$TARGET_CONFIG" ]; then
     rm "$TARGET_CONFIG"
 fi
 
-ln -s "$CONFIG_SOURCE" "$TARGET_CONFIG"
-echo "Symlinked i3status config -> $TARGET_CONFIG"
+rm -f "$TARGET_CONFIG"
+
+cp "$CONFIG_SOURCE" \
+   "$TARGET_CONFIG"
+
+echo "Installed i3status config -> $TARGET_CONFIG"
 
 echo
 echo "i3status installed"
