@@ -1,7 +1,6 @@
 -- lua/slliks4/config/harpoon.lua
 
 local harpoon = require("harpoon")
-local ui = require("harpoon.ui")
 
 -- ==========================
 -- Setup
@@ -24,7 +23,7 @@ end, { desc = "Harpoon Add File", silent = true })
 
 -- Toggle menu
 vim.keymap.set("n", "<leader>A", function()
-    ui:toggle_quick_menu(harpoon:list())
+    harpoon.ui:toggle_quick_menu(harpoon:list())
 end, { desc = "Harpoon Menu", silent = true })
 
 -- Quick access (1–9)
