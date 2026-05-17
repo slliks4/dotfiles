@@ -85,7 +85,19 @@ ZSH_THEME_GIT_PROMPT_CLEAN="%F{71}="
 # -------------------------
 # Prompt
 # -------------------------
-PROMPT='${CURRENT_MODE} %F{71}%~ %F{180}$(git_prompt_info)%f '
+
+# -------------------------
+# SSH Session Badge
+# -------------------------
+SSH_BADGE=""
+
+if [[ -n "$SSH_CONNECTION" ]]; then
+    SSH_SERVER_IP=$(echo $SSH_CONNECTION | awk '{print $3}')
+
+    SSH_BADGE="%K{238}%F{180} SSH:${SSH_SERVER_IP} %f%k "
+fi
+
+PROMPT='${CURRENT_MODE} ${SSH_BADGE}%F{71}%~ %F{180}$(git_prompt_info)%f '
 PROMPT2='%F{178}> %f'
 
 # -------------------------
