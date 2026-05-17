@@ -43,18 +43,16 @@ fi
 # ==========================
 mkdir -p "$ZSH_CONF_DIR"
 
-if [ ! -f "$NVIM_ALIAS_FILE" ]; then
-    echo "Creating nvim shell config -> $NVIM_ALIAS_FILE"
+rm $NVIM_ALIAS_FILE
 
-    cat > "$NVIM_ALIAS_FILE" << 'EOF'
+echo "Creating nvim shell config -> $NVIM_ALIAS_FILE"
+
+cat > "$NVIM_ALIAS_FILE" << 'EOF'
 export EDITOR=nvim
 export VISUAL=nvim
 alias vi=nvim
 alias vim=nvim
 EOF
-else
-    echo "nvim shell config already exists"
-fi
 
 # ==========================
 # Ensure config directory
