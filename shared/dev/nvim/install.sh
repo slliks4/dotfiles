@@ -43,7 +43,7 @@ fi
 # ==========================
 mkdir -p "$ZSH_CONF_DIR"
 
-rm $NVIM_ALIAS_FILE
+rm -f $NVIM_ALIAS_FILE
 
 echo "Creating nvim shell config -> $NVIM_ALIAS_FILE"
 
@@ -72,7 +72,7 @@ fi
 # Remove incorrect symlink
 # ==========================
 if [ -L "$NVIM_DIR" ]; then
-    rm "$NVIM_DIR"
+    rm -f "$NVIM_DIR"
 fi
 
 # ==========================
