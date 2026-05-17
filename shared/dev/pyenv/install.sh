@@ -45,7 +45,7 @@ fi
 # ==========================
 mkdir -p "$ZSH_CONF_DIR"
 
-rm $PYENV_CONF_FILE
+rm -f $PYENV_CONF_FILE
 
 echo "Creating pyenv shell config -> $PYENV_CONF_FILE"
 
