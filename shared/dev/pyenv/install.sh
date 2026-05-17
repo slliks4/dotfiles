@@ -45,10 +45,11 @@ fi
 # ==========================
 mkdir -p "$ZSH_CONF_DIR"
 
-if [ ! -f "$PYENV_CONF_FILE" ]; then
-    echo "Creating pyenv shell config -> $PYENV_CONF_FILE"
+rm $PYENV_CONF_FILE
 
-    cat > "$PYENV_CONF_FILE" << 'EOF'
+echo "Creating pyenv shell config -> $PYENV_CONF_FILE"
+
+cat > "$PYENV_CONF_FILE" << 'EOF'
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -57,10 +58,10 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv >/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
+
+alias py=python3
+alias python=python3
 EOF
-else
-    echo "pyenv shell config already exists"
-fi
 
 # ==========================
 # Done
