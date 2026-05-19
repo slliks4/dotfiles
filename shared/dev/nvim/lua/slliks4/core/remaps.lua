@@ -12,7 +12,7 @@ vim.keymap.set({ "n", "v" }, "<leader>x", '"_d')
 
 -- Save / Quit
 vim.keymap.set("n", "<leader>w", ":w<CR>")
-vim.keymap.set("n", "<leader>q", ":q<CR>")
+vim.keymap.set("n", "<leader>q", ":qall<CR>")
 
 -- Windows
 vim.keymap.set("n", "<leader>V", "<C-w>v<C-w>l")
