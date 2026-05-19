@@ -23,6 +23,11 @@ i3-msg "workspace 1"
 i3-msg '[workspace="1"] move container to workspace 8'
 
 # Ensure apps exist
+if ! has_window '.. | objects | select(.window_properties.class? == "discord")'; then
+    i3-msg 'exec discord'
+    wait_for_window '.. | objects | select(.window_properties.class? == "discord")'
+fi
+
 if ! has_window '.. | objects | select(.window_properties.class? == "zen")'; then
     i3-msg 'exec zen-browser'
     wait_for_window '.. | objects | select(.window_properties.class? == "zen")'
@@ -34,20 +39,20 @@ if ! has_window '.. | objects | select(.window_properties.class? == "pavucontrol
 fi
 
 # Move to workspace
-i3-msg '[class="zen"] move to workspace 1'
+i3-msg '[class="discord"] move to workspace 1'
 i3-msg '[class="pavucontrol"] move to workspace 1'
 
 i3-msg "workspace 1"
 
 # Mark roles
-i3-msg '[class="zen"] mark --replace zen'
+i3-msg '[class="discord"] mark --replace discord'
 i3-msg '[class="pavucontrol"] mark --replace pavu'
 
-# Stack → split vertically → resize
+# Stack: split vertically then resize
 i3-msg 'layout stacking'
 
 i3-msg '
-    [con_mark="zen"] focus;
+    [con_mark="discord"] focus;
     focus parent;
     split v
 '
@@ -55,10 +60,29 @@ i3-msg '
 i3-msg '[con_mark="pavu"] move down'
 
 i3-msg '
-    [con_mark="zen"] focus;
+    [con_mark="discord"] focus;
     focus parent;
     resize set height 80 ppt
 '
+
+# Return focus to discord
+i3-msg '[con_mark="discord"] focus'
+
+# Optional:
+# ONLY move firefox devtools IF already opened
+if has_window '.. | objects | select(
+    .window_properties.class? == "firefox-developer-edition"
+    and .window_properties.instance? == "Devtools"
+)'; then
+    i3-msg '[class="firefox-developer-edition" instance="Devtools"] move to workspace 1'
+fi
+
+# Move Zen to Workspace 1
+i3-msg '[class="zen"] move to workspace 1'
+
+# Return focus to discord
+i3-msg '[con_mark="discord"] focus'
+i3-msg 'layout tabbed'
 
 # =========================================================
 # PART 2: DEV WORKSPACE (workspace 0 → main layout)
