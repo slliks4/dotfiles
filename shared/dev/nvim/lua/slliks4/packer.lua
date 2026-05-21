@@ -26,6 +26,22 @@ return require('packer').startup(function(use)
     }
 
     -- ==========================
+    -- Completion
+    -- ==========================
+    use {
+        'hrsh7th/nvim-cmp',
+        config = function()
+            require('slliks4.config.cmp')
+        end
+    }
+
+    use 'hrsh7th/cmp-nvim-lsp'
+
+    use 'L3MON4D3/LuaSnip'
+
+    use 'rafamadriz/friendly-snippets'
+
+    -- ==========================
     --  FZF: for telescope
     -- ==========================
     use {

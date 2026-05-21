@@ -1,4 +1,5 @@
 -- lua/slliks4/config/lsp.lua
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 require("mason").setup()
 
@@ -6,6 +7,7 @@ require("mason-lspconfig").setup({
     ensure_installed = {
         "ts_ls",
         "pylsp",
+        "eslint",
     },
 })
 
@@ -44,17 +46,32 @@ end
 local lsp_servers = {
     ts_ls = false,
     pylsp = false,
+    eslint = false,
 }
 
 -- ==========================
 -- Server Configs
 -- ==========================
 vim.lsp.config("ts_ls", {
+    capabilities = capabilities,
     on_attach = on_attach,
 
     root_markers = {
         "package.json",
         "tsconfig.json",
+        ".git",
+    },
+})
+
+vim.lsp.config("eslint", {
+    capabilities = capabilities,
+    on_attach = on_attach,
+
+    root_markers = {
+        "package.json",
+        ".eslintrc",
+        ".eslintrc.js",
+        ".eslintrc.cjs",
         ".git",
     },
 })
