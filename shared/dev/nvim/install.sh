@@ -69,17 +69,15 @@ if [ -e "$NVIM_DIR" ] && [ ! -L "$NVIM_DIR" ]; then
 fi
 
 # ==========================
-# Remove incorrect symlink
+# Remove any other nvim dir
 # ==========================
-if [ -L "$NVIM_DIR" ]; then
-    rm -f "$NVIM_DIR"
-fi
+rm -rf $NVIM_DIR
 
 # ==========================
-# Symlink config
+# copy dir 
 # ==========================
-ln -s "$SCRIPT_DIR" "$NVIM_DIR"
-echo "Symlinked $SCRIPT_DIR -> $NVIM_DIR"
+cp -ar "$SCRIPT_DIR" "$NVIM_DIR"
+echo "Copied $SCRIPT_DIR -> $NVIM_DIR"
 
 # ==========================
 # Done
