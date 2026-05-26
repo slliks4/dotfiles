@@ -2,14 +2,14 @@
 width = 320
 height = (0, 220)
 
-padding = 10
-horizontal_padding = 10
-frame_width = 2
+padding = 8
+horizontal_padding = 8
+frame_width = 1
 corner_radius = 0
 separator_color = frame
 
 # FONT
-font = Terminus 10
+font = Terminus 8
 
 background = "#0B0F0B"
 foreground = "#FFB000"   # amber text (global)
