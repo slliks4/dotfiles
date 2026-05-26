@@ -13,7 +13,7 @@ set -e
 # Must run AFTER X starts (via conf.d)
 
 # Key repeat (delay rate)
-xset r rate 200 35
+xset r rate 180 55
 
 # Set layout and options (single source of truth)
 setxkbmap -layout us -option '' -option caps:escape_shifted_capslock
