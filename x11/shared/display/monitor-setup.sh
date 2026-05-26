@@ -28,7 +28,8 @@ if echo "$XRANDR_OUTPUT" | grep -q "^DP-0 connected" && \
 
     # Primary
     xrandr --output DP-0 \
-        --auto \
+        --mode 2560x1440\
+        --rate 144 \
         --pos 0x0 \
         --primary
 
@@ -37,12 +38,12 @@ if echo "$XRANDR_OUTPUT" | grep -q "^DP-0 connected" && \
         --mode 1920x1080 \
         --rotate left \
         --left-of DP-0
-
-    # Optional clone
+    # Optional clone for capture card / OBS
     if echo "$XRANDR_OUTPUT" | grep -q "^HDMI-0 connected"; then
         xrandr --output HDMI-0 \
+            --mode 1920x1080 \
             --same-as DP-0 \
-            --auto
+            --scale-from 2560x1440
     fi
 
 else
