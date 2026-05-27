@@ -25,10 +25,17 @@ vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- reload and sync updates from disk
 vim.keymap.set('n', '<leader><leader>', function()
-    vim.cmd('checktime')   -- Sync files with disk
-    vim.cmd('edit!')       -- Reload current buffer
-    print("Files refreshed!") 
-end, { desc = 'Refresh current file and disk' })
+    -- Check if the current buffer is a directory (like netrw or oil.nvim)
+    if vim.bo.filetype == 'netrw' or vim.fn.isdirectory(vim.fn.expand('%')) == 1 then
+        vim.cmd('edit .') -- Reloads the directory view
+        print("Directory refreshed!")
+    else
+        -- Your existing logic for standard files
+        vim.cmd('checktime')
+        vim.cmd('edit!')
+        print("File refreshed from disk!")
+    end
+end, { desc = 'Refresh current file, directory, or disk' })
 
 -- Explorer
 vim.keymap.set("n", "<leader>e", vim.cmd.Ex)
