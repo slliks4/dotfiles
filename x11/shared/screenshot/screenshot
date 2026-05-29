@@ -16,7 +16,7 @@ set -e
 # Config
 # --------------------------
 DIR="$HOME/Pictures/Screenshots"
-PORT=8000
+PORT=6969
 
 STAMP="$(date +'%Y-%m-%d_%H-%M-%S').png"
 FILE="$DIR/$STAMP"

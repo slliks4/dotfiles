@@ -9,7 +9,7 @@ y = 6
 # Font
 # -------------------------
 [font]
-size = 16
+size = 14
 
 [font.normal]
 family = "Terminus"
