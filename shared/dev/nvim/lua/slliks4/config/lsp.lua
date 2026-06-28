@@ -7,6 +7,7 @@ require("mason-lspconfig").setup({
     ensure_installed = {
         "ts_ls",
         "pylsp",
+        "clangd",
         "eslint",
     },
 })
@@ -47,6 +48,7 @@ local lsp_servers = {
     ts_ls = false,
     pylsp = false,
     eslint = false,
+    clangd = false,
 }
 
 -- ==========================
@@ -84,6 +86,21 @@ vim.lsp.config("pylsp", {
         "requirements.txt",
         ".git",
     },
+})
+
+vim.lsp.config("clangd", {
+    cmd = { "clangd" },
+
+    on_attach = on_attach,
+
+    root_markers = {
+        "compile_commands.json",
+        "compile_flags.txt",
+        ".clangd",
+        ".git",
+    },
+
+    capabilities = capabilities,
 })
 
 -- ==========================
