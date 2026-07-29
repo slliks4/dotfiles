@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Server Log Terminal
+Exec=server-log-terminal
+Type=Application
+Categories=Terminal;
+Terminal=false
