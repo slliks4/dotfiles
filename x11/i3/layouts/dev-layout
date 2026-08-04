@@ -39,14 +39,14 @@ if ! has_window '.. | objects | select(.window_properties.class? == "pavucontrol
 fi
 
 # Move to workspace
-i3-msg '[class="discord"] move to workspace 1'
 i3-msg '[class="pavucontrol"] move to workspace 1'
+i3-msg '[class="discord"] move to workspace 1'
 
 i3-msg "workspace 1"
 
 # Mark roles
-i3-msg '[class="discord"] mark --replace discord'
 i3-msg '[class="pavucontrol"] mark --replace pavu'
+i3-msg '[class="discord"] mark --replace discord'
 
 # Stack: split vertically then resize
 i3-msg 'layout stacking'
@@ -57,7 +57,7 @@ i3-msg '
     split v
 '
 
-i3-msg '[con_mark="pavu"] move down'
+i3-msg '[con_mark="pavu"] move up'
 
 i3-msg '
     [con_mark="discord"] focus;
