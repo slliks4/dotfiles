@@ -15,7 +15,7 @@ Tmux is treated as a core tool:
 ## Installation
 
 ```bash
-./deploy.sh
+./install.sh
 ````
 
 ---

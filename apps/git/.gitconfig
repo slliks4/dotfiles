@@ -1,0 +1,19 @@
+[credential "https://github.com"]
+    helper =
+    helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+    helper =
+    helper = !gh auth git-credential
+
+[init]
+    defaultBranch = main
+
+[diff]
+    tool = nvimdiff
+
+[difftool]
+    prompt = false
+
+[include]
+    path = ~/.gitconfig.local

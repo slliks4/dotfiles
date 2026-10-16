@@ -1,4 +1,0 @@
-# Remap settings
-
-
-# Color settings
