@@ -14,18 +14,18 @@ TARGET_SCRIPT="$BIN_DIR/$SCRIPT_NAME"
 # --------------------------
 # Dependencies
 # --------------------------
-ensure_pkg() {
-    if ! pacman -Qi "$1" >/dev/null 2>&1; then
-        echo "Installing missing dependency: $1"
-        sudo pacman -S --noconfirm "$1"
-    fi
-}
-
-ensure_pkg maim
-ensure_pkg slop
-ensure_pkg xclip
-ensure_pkg libnotify
-ensure_pkg python
+# ensure_pkg() {
+#     if ! pacman -Qi "$1" >/dev/null 2>&1; then
+#         echo "Installing missing dependency: $1"
+#         sudo pacman -S --noconfirm "$1"
+#     fi
+# }
+# 
+# ensure_pkg maim
+# ensure_pkg slop
+# ensure_pkg xclip
+# ensure_pkg libnotify
+# ensure_pkg python
 
 # --------------------------
 # Create bin directory
@@ -36,7 +36,8 @@ mkdir -p "$BIN_DIR"
 # Symlink script
 # --------------------------
 chmod +x "$SCRIPT_DIR/$SCRIPT_NAME"
-ln -sf "$SCRIPT_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
+rm -rf "$TARGET_SCRIPT"
+cp "$SCRIPT_DIR/$SCRIPT_NAME" "$TARGET_SCRIPT"
 
 # --------------------------
 # Done
